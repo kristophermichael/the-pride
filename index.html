@@ -368,17 +368,15 @@ function daysSince() { return Math.max(1, Math.floor((new Date() - START_DATE) /
 function todayKey()   { return new Date().toISOString().slice(0, 10); }
 function todayLabel() { return new Date().toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' }); }
 
-
-// ── Supabase ─────────────────────────────────────────────────
-async function fetchEntries(cat) {
-  const all = loadAllEntries();
-  const catEntries = Object.values(all[cat] || {});
+function fetchEntries(cat) {
+  var all = loadAllEntries();
+  var catEntries = Object.values(all[cat] || {});
   catEntries.sort(function(a, b) { return b.entry_date.localeCompare(a.entry_date); });
   return catEntries.slice(0, 30);
 }
-async function upsertEntry(entry) {
+function upsertEntry(entry) {
   try {
-    const all = loadAllEntries();
+    var all = loadAllEntries();
     if (!all[entry.cat]) all[entry.cat] = {};
     all[entry.cat][entry.entry_date] = entry;
     saveAllEntries(all);
@@ -386,108 +384,82 @@ async function upsertEntry(entry) {
   } catch(e) { console.error(e); return false; }
 }
 
-// ── Form state ───────────────────────────────────────────────
 function getFormState(cat) {
-  let mood = null, behaviors = [];
-  document.querySelectorAll(`.mood-btn[data-cat="${cat}"].selected`).forEach(b => mood = b.dataset.mood);
-  document.querySelectorAll(`input[type=checkbox][data-cat="${cat}"]:checked`).forEach(c => behaviors.push(c.dataset.behavior));
-  return { mood, behaviors, journal: document.getElementById(`journal-${cat}`).value.trim() };
+  var mood = null, behaviors = [];
+  document.querySelectorAll('.mood-btn[data-cat="' + cat + '"].selected').forEach(function(b) { mood = b.dataset.mood; });
+  document.querySelectorAll('input[type=checkbox][data-cat="' + cat + '"]:checked').forEach(function(c) { behaviors.push(c.dataset.behavior); });
+  return { mood: mood, behaviors: behaviors, journal: document.getElementById('journal-' + cat).value.trim() };
 }
 
-// ── Save ──────────────────────────────────────────────────────
-async function saveEntry(cat) {
-  const btn = document.getElementById(`save-btn-${cat}`);
+function saveEntry(cat) {
+  var btn = document.getElementById('save-btn-' + cat);
   btn.disabled = true; btn.textContent = 'Saving...';
-  const s = getFormState(cat);
-  const ok = await upsertEntry({ cat, entry_date: todayKey(), mood: s.mood, behaviors: s.behaviors, journal: s.journal });
+  var s = getFormState(cat);
+  var ok = upsertEntry({ cat: cat, entry_date: todayKey(), mood: s.mood, behaviors: s.behaviors, journal: s.journal });
   if (ok) {
     btn.textContent = '✓ Saved';
-    setTimeout(() => { btn.textContent = `Save ${cat === 'arlo' ? "Arlo's" : "Alma's"} entry`; btn.disabled = false; }, 1800);
-    await renderLog(cat);
+    setTimeout(function() { btn.textContent = cat === 'arlo' ? "Save Arlo's entry" : "Save Alma's entry"; btn.disabled = false; }, 1800);
+    renderLog(cat);
   } else {
     btn.textContent = 'Error — try again'; btn.disabled = false;
   }
 }
 
-// ── Log ───────────────────────────────────────────────────────
-async function renderLog(cat) {
-  const entries = await fetchEntries(cat);
-  const el = document.getElementById(`log-${cat}`);
-  if (!entries.length) { el.innerHTML = `<div class="empty-log">No entries yet — save today's check-in to start the log.</div>`; return; }
-  const isArlo = cat === 'arlo';
-  el.innerHTML = entries.map(e => {
-    const b = e.behaviors || [];
-    const mTags = [
-      b.includes('allowed-touch') ? `<span class="milestone-tag">First touch — ${isArlo ? 'Arlo' : 'Alma'}</span>` : '',
-      b.includes('slow-blink')    ? `<span class="milestone-tag">Slow blink returned</span>`  : ''
+function renderLog(cat) {
+  var entries = fetchEntries(cat);
+  var el = document.getElementById('log-' + cat);
+  var isArlo = cat === 'arlo';
+  var name = isArlo ? 'Arlo' : 'Alma';
+  if (!entries.length) { el.innerHTML = '<div class="empty-log">No entries yet — save today\'s check-in to start the log.</div>'; return; }
+  el.innerHTML = entries.map(function(e) {
+    var b = e.behaviors || [];
+    var mTags = [
+      b.includes('allowed-touch') ? '<span class="milestone-tag">First touch — ' + name + '</span>' : '',
+      b.includes('slow-blink')    ? '<span class="milestone-tag">Slow blink returned</span>' : ''
     ].join('');
-    const pill = e.mood ? `<span class="mood-pill ${cat}">${e.mood}</span>` : '';
-    const d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
-    return `<div class="log-entry">
-      <div class="log-entry-header"><span class="log-entry-date">${d}${mTags}</span>${pill}</div>
-      ${e.journal ? `<div class="log-entry-journal">${e.journal}</div>` : ''}
-    </div>`;
+    var pill = e.mood ? '<span class="mood-pill ' + cat + '">' + e.mood + '</span>' : '';
+    var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    return '<div class="log-entry"><div class="log-entry-header"><span class="log-entry-date">' + d + mTags + '</span>' + pill + '</div>' +
+      (e.journal ? '<div class="log-entry-journal">' + e.journal + '</div>' : '') + '</div>';
   }).join('');
-  const activeDays = entries.filter(e => (e.behaviors||[]).length > 0).length;
-  document.getElementById(`${cat}-active-days`).textContent = activeDays ? `${activeDays} active days` : '';
+  var activeDays = entries.filter(function(e) { return (e.behaviors||[]).length > 0; }).length;
+  document.getElementById(cat + '-active-days').textContent = activeDays ? activeDays + ' active days' : '';
 }
 
-// ── AI Recommendations ────────────────────────────────────────
 async function getRecommendations(cat) {
-  const aiBox = document.getElementById(`ai-box-${cat}`), aiText = document.getElementById(`ai-text-${cat}`);
+  var aiBox = document.getElementById('ai-box-' + cat);
+  var aiText = document.getElementById('ai-text-' + cat);
   aiBox.removeAttribute('hidden');
-  aiText.innerHTML = `<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Analyzing ${cat === 'arlo' ? 'Arlo' : 'Alma'}'s progress...</span></div>`;
-  const s = getFormState(cat), entries = await fetchEntries(cat);
-  const history = entries.slice(0,7).map(e => {
-    const d = new Date(e.entry_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    return `${d}: mood(${e.mood||'?'}), behaviors: ${(e.behaviors||[]).join(', ')||'none'}, note: "${e.journal||'-'}"`;
+  aiText.innerHTML = '<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Analyzing ' + (cat === 'arlo' ? 'Arlo' : 'Alma') + "'s progress..."+  '</span></div>';
+  var s = getFormState(cat);
+  var entries = fetchEntries(cat);
+  var history = entries.slice(0,7).map(function(e) {
+    var d = new Date(e.entry_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return d + ': mood(' + (e.mood||'?') + '), behaviors: ' + ((e.behaviors||[]).join(', ')||'none') + ', note: "' + (e.journal||'-') + '"';
   }).join('\n');
-
-  const isArlo = cat === 'arlo';
-  const prompt = `You are a warm, knowledgeable cat behavior expert helping Kristopher, a devoted cat parent.
-
-He recently adopted two ~6-month-old kittens — a brother (${isArlo ? 'Arlo, the subject of this session' : 'Arlo'}) and sister (${isArlo ? 'Alma' : 'Alma, the subject of this session'}). They are bonded siblings.
-${isArlo
-  ? '- Arlo is more standoffish. He comes out to eat and plays with wand/laser toys but avoids touch and retreats to his safe spot. Adopted at 6 months, past the prime socialization window.\n- Kristopher practices slow blink + look away, keeps a worn t-shirt near Arlo\'s safe spot, and lets Arlo initiate all contact. He resists the urge to reach for Arlo.'
-  : '- Alma is warming up quickly and is social, coming up for pets and engaging with Kristopher readily.'
-}
-
-Today's check-in for ${isArlo ? 'Arlo' : 'Alma'}:
-Mood: ${s.mood||'not noted'}
-Behaviors: ${s.behaviors.join(', ')||'none checked'}
-Journal: ${s.journal||'no notes today'}
-
-Recent history for ${isArlo ? 'Arlo' : 'Alma'}:
-${history||'No prior entries yet.'}
-
-Give 3 warm, specific, actionable recommendations for tomorrow based on today's data. 2-3 sentences each. ${isArlo ? 'Address Arlo\'s trust journey specifically. Acknowledge any progress clearly.' : 'Focus on continuing to build on Alma\'s social confidence and reinforcing positive interactions.'}`;
-
+  var isArlo = cat === 'arlo';
+  var prompt = 'You are a warm, knowledgeable cat behavior expert helping Kristopher, a devoted cat parent.\n\nHe recently adopted two ~6-month-old kittens — a brother (Arlo) and sister (Alma). They are bonded siblings.\n' +
+    (isArlo
+      ? '- Arlo is more standoffish. He comes out to eat and plays with wand/laser toys but avoids touch and retreats to his safe spot. Adopted at 6 months, past the prime socialization window.\n- Kristopher practices slow blink + look away, keeps a worn t-shirt near Arlo\'s safe spot, and lets Arlo initiate all contact.'
+      : '- Alma is warming up quickly and is social, coming up for pets and engaging with Kristopher readily.') +
+    '\n\nToday\'s check-in for ' + (isArlo ? 'Arlo' : 'Alma') + ':\nMood: ' + (s.mood||'not noted') + '\nBehaviors: ' + (s.behaviors.join(', ')||'none checked') + '\nJournal: ' + (s.journal||'no notes today') +
+    '\n\nRecent history:\n' + (history||'No prior entries yet.') +
+    '\n\nGive 3 warm, specific, actionable recommendations for tomorrow. 2-3 sentences each. ' +
+    (isArlo ? "Address Arlo's trust journey specifically. Acknowledge any progress clearly." : "Focus on continuing to build on Alma's social confidence and reinforcing positive interactions.");
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
     });
-    const data = await res.json();
-    const text = data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || 'No recommendations returned.';
-    aiText.innerHTML = text.split(/\n\n+/).map(p => `<p>${p.trim()}</p>`).join('');
+    var data = await res.json();
+    var text = (data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('') || 'No recommendations returned.';
+    aiText.innerHTML = text.split(/\n\n+/).map(function(p){return '<p>'+p.trim()+'</p>';}).join('');
   } catch(err) {
     console.error(err);
     aiText.innerHTML = '<p style="color:#F87171">Could not reach AI — check your connection and try again.</p>';
   }
 }
 
-// ── Mood buttons ──────────────────────────────────────────────
-document.querySelectorAll('.mood-btn').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.mood-btn[data-cat="' + btn.dataset.cat + '"]').forEach(function(b) { b.classList.remove('selected','arlo','alma'); });
-    btn.classList.add('selected', btn.dataset.cat);
-  });
-});
-document.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
-  cb.addEventListener('change', function() { cb.closest('.behavior-row').classList.toggle('checked', cb.checked); });
-});
-
-// ── Tab switching ─────────────────────────────────────────────
 function switchTab(cat) {
   document.getElementById('tab-arlo').classList.remove('active');
   document.getElementById('tab-alma').classList.remove('active');
@@ -499,20 +471,31 @@ function switchTab(cat) {
   document.getElementById('tab-' + cat).setAttribute('aria-selected','true');
   document.getElementById('panel-' + cat).classList.add('active');
 }
-document.getElementById('tab-arlo').addEventListener('click', function() { switchTab('arlo'); });
-document.getElementById('tab-alma').addEventListener('click', function() { switchTab('alma'); });
 
-// ── Button event listeners ────────────────────────────────────
-document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
-document.getElementById('save-btn-alma').addEventListener('click', function() { saveEntry('alma'); });
-document.getElementById('rec-btn-arlo').addEventListener('click', function() { getRecommendations('arlo'); });
-document.getElementById('rec-btn-alma').addEventListener('click', function() { getRecommendations('alma'); });
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('tab-arlo').addEventListener('click', function() { switchTab('arlo'); });
+  document.getElementById('tab-alma').addEventListener('click', function() { switchTab('alma'); });
+  document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
+  document.getElementById('save-btn-alma').addEventListener('click', function() { saveEntry('alma'); });
+  document.getElementById('rec-btn-arlo').addEventListener('click', function() { getRecommendations('arlo'); });
+  document.getElementById('rec-btn-alma').addEventListener('click', function() { getRecommendations('alma'); });
 
-// ── Init ──────────────────────────────────────────────────────
-document.getElementById('today-date').textContent = todayLabel();
-document.getElementById('day-count').textContent  = daysSince();
-renderLog('arlo');
-renderLog('alma');
+  document.querySelectorAll('.mood-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.mood-btn[data-cat="' + btn.dataset.cat + '"]').forEach(function(b) { b.classList.remove('selected','arlo','alma'); });
+      btn.classList.add('selected', btn.dataset.cat);
+    });
+  });
+  document.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+    cb.addEventListener('change', function() { cb.closest('.behavior-row').classList.toggle('checked', cb.checked); });
+  });
+
+  document.getElementById('today-date').textContent = todayLabel();
+  document.getElementById('day-count').textContent  = daysSince();
+  renderLog('arlo');
+  renderLog('alma');
+});
+
   </script>
 </body>
 </html>
