@@ -214,11 +214,11 @@ textarea::placeholder { color: var(--muted); }
 
     <!-- Tabs -->
     <div class="cat-tabs" role="tablist">
-      <button class="tab-btn arlo active" role="tab" aria-selected="true" onclick="switchTab('arlo')">
+      <button class="tab-btn arlo active" role="tab" aria-selected="true" data-tab="arlo">
         <div class="tab-avatar arlo">A</div>
         Arlo
       </button>
-      <button class="tab-btn alma" role="tab" aria-selected="false" onclick="switchTab('alma')">
+      <button class="tab-btn alma" role="tab" aria-selected="false" data-tab="alma">
         <div class="tab-avatar alma">A</div>
         Alma
       </button>
@@ -261,11 +261,11 @@ textarea::placeholder { color: var(--muted); }
       </section>
 
       <div class="action-row">
-        <button class="btn primary-arlo" id="save-btn-arlo" onclick="saveEntry('arlo')">
+        <button class="btn primary-arlo" id="save-btn-arlo">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save Arlo's entry
         </button>
-        <button class="btn" onclick="getRecommendations('arlo')">
+        <button class="btn" id="rec-btn-arlo">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           Get recommendations
         </button>
@@ -322,11 +322,11 @@ textarea::placeholder { color: var(--muted); }
       </section>
 
       <div class="action-row">
-        <button class="btn primary-alma" id="save-btn-alma" onclick="saveEntry('alma')">
+        <button class="btn primary-alma" id="save-btn-alma">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save Alma's entry
         </button>
-        <button class="btn" onclick="getRecommendations('alma')">
+        <button class="btn" id="rec-btn-alma">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           Get recommendations
         </button>
@@ -347,17 +347,6 @@ textarea::placeholder { color: var(--muted); }
     </div>
 
   </main>
-
-  <script>
-// ── Tab switching — defined early so onclick always works ─────
-function switchTab(cat) {
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-  document.querySelectorAll('.cat-panel').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelector('.tab-btn.' + cat).classList.add('active');
-  document.querySelector('.tab-btn.' + cat).setAttribute('aria-selected','true');
-  document.getElementById('panel-' + cat).classList.add('active');
-}
-  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -483,15 +472,33 @@ Give 3 warm, specific, actionable recommendations for tomorrow based on today's 
 }
 
 // ── Mood buttons ──────────────────────────────────────────────
-document.querySelectorAll('.mood-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll(`.mood-btn[data-cat="${btn.dataset.cat}"]`).forEach(b => b.classList.remove('selected','arlo','alma'));
+document.querySelectorAll('.mood-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.mood-btn[data-cat="' + btn.dataset.cat + '"]').forEach(function(b) { b.classList.remove('selected','arlo','alma'); });
     btn.classList.add('selected', btn.dataset.cat);
   });
 });
-document.querySelectorAll('input[type=checkbox]').forEach(cb => {
-  cb.addEventListener('change', () => cb.closest('.behavior-row').classList.toggle('checked', cb.checked));
+document.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+  cb.addEventListener('change', function() { cb.closest('.behavior-row').classList.toggle('checked', cb.checked); });
 });
+
+// ── Tab switching ─────────────────────────────────────────────
+function switchTab(cat) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.querySelectorAll('.cat-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelector('.tab-btn[data-tab="' + cat + '"]').classList.add('active');
+  document.querySelector('.tab-btn[data-tab="' + cat + '"]').setAttribute('aria-selected','true');
+  document.getElementById('panel-' + cat).classList.add('active');
+}
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() { switchTab(btn.dataset.tab); });
+});
+
+// ── Button event listeners ────────────────────────────────────
+document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
+document.getElementById('save-btn-alma').addEventListener('click', function() { saveEntry('alma'); });
+document.getElementById('rec-btn-arlo').addEventListener('click', function() { getRecommendations('arlo'); });
+document.getElementById('rec-btn-alma').addEventListener('click', function() { getRecommendations('alma'); });
 
 // ── Init ──────────────────────────────────────────────────────
 document.getElementById('today-date').textContent = todayLabel();
