@@ -549,10 +549,10 @@ async function getRecommendations(cat) {
     + (isArlo ? 'Acknowledge even small wins for Arlo warmly.' : "Celebrate Alma's social progress and suggest ways to keep building on it.");
 
   try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
+    var res = await fetch('https://jpeehbkdtxzjwyujxrhm.supabase.co/functions/v1/ai-digest', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      body: JSON.stringify({ prompt: prompt })
     });
     var data = await res.json();
     var text = '';
