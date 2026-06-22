@@ -502,11 +502,11 @@ function upsertEntry(entry) {
 }
 
 function getFormState(cat) {
-  var mood = null;
+  var moods = [];
   var behaviors = [];
-  document.querySelectorAll('.mood-btn[data-cat="' + cat + '"].selected').forEach(function(b) { mood = b.dataset.mood; });
+  document.querySelectorAll('.mood-btn[data-cat="' + cat + '"].selected').forEach(function(b) { moods.push(b.dataset.mood); });
   document.querySelectorAll('input[type=checkbox][data-cat="' + cat + '"]:checked').forEach(function(c) { behaviors.push(c.dataset.behavior); });
-  return { mood: mood, behaviors: behaviors, journal: document.getElementById('journal-' + cat).value.trim() };
+  return { mood: moods.join('+'), moods: moods, behaviors: behaviors, journal: document.getElementById('journal-' + cat).value.trim() };
 }
 
 function saveEntry(cat) {
@@ -542,10 +542,10 @@ function renderLog(cat) {
       var tags = '';
       if (b.indexOf('allowed-touch') !== -1) tags += '<span class="milestone-tag">First touch - ' + name + '</span>';
       if (b.indexOf('slow-blink') !== -1) tags += '<span class="milestone-tag">Slow blink returned</span>';
-      var pill = e.mood ? '<span class="mood-pill ' + cat + '">' + e.mood + '</span>' : '';
+      var moodDisplay = e.mood ? e.mood.split('+').map(function(m) { return '<span class="mood-pill ' + cat + '">' + m + '</span>'; }).join('') : '';
       var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
       var journal = e.journal ? '<div class="log-entry-journal">' + e.journal + '</div>' : '';
-      return '<div class="log-entry"><div class="log-entry-header"><span class="log-entry-date">' + d + tags + '</span>' + pill + '</div>' + journal + '</div>';
+      return '<div class="log-entry"><div class="log-entry-header"><span class="log-entry-date">' + d + tags + '</span>' + moodDisplay + '</div>' + journal + '</div>';
     }).join('');
     var activeDays = entries.filter(function(e) { return (e.behaviors || []).length > 0; }).length;
     document.getElementById(cat + '-active-days').textContent = activeDays ? activeDays + ' active days' : '';
@@ -601,10 +601,10 @@ function getDigest() {
       + 'She is the confident one whose comfort around Kristopher is actively helping teach Arlo that humans are safe. Both are bonded siblings who play together and take social cues from each other. '
       + 'ARLO ' + as.total + ' days: active=' + as.active + ' playful=' + as.playful + ' curious=' + as.curious + ' hiding=' + as.hiding + ' played=' + as.played + ' nearMe=' + as.nearMe + ' touched=' + as.touched + ' blinked=' + as.blinked + '. '
       + 'Arlo recent: ' + (buildHistory(arloEntries)||'none') + '. '
-      + 'Arlo today: mood=' + (arloState.mood||'not noted') + ' behaviors=' + (arloState.behaviors.join(',')||'none') + ' journal="' + (arloState.journal||'no notes') + '". '
+      + 'Arlo today: mood=' + (arloState.moods && arloState.moods.length ? arloState.moods.join('+') : 'not noted') + ' behaviors=' + (arloState.behaviors.join(',')||'none') + ' journal="' + (arloState.journal||'no notes') + '". '
       + 'ALMA ' + ms.total + ' days: active=' + ms.active + ' playful=' + ms.playful + ' curious=' + ms.curious + ' hiding=' + ms.hiding + ' played=' + ms.played + ' nearMe=' + ms.nearMe + ' touched=' + ms.touched + ' blinked=' + ms.blinked + '. '
       + 'Alma recent: ' + (buildHistory(almaEntries)||'none') + '. '
-      + 'Alma today: mood=' + (almaState.mood||'not noted') + ' behaviors=' + (almaState.behaviors.join(',')||'none') + ' journal="' + (almaState.journal||'no notes') + '". '
+      + 'Alma today: mood=' + (almaState.moods && almaState.moods.length ? almaState.moods.join('+') : 'not noted') + ' behaviors=' + (almaState.behaviors.join(',')||'none') + ' journal="' + (almaState.journal||'no notes') + '". '
       + 'Write a warm combined daily digest with 4 sections: '
       + '1. **The Pride today** - brief warm overview of both cats (2-3 sentences). '
       + '2. **Arlo** - progress summary and 2-3 specific things to try tomorrow. '
@@ -661,8 +661,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.querySelectorAll('.mood-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      document.querySelectorAll('.mood-btn[data-cat="' + btn.dataset.cat + '"]').forEach(function(b) { b.classList.remove('selected','arlo','alma'); });
-      btn.classList.add('selected', btn.dataset.cat);
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected', 'arlo', 'alma');
+      } else {
+        btn.classList.add('selected', btn.dataset.cat);
+      }
     });
   });
   document.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
