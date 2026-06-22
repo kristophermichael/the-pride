@@ -190,6 +190,9 @@ textarea::placeholder { color: var(--muted); }
 .log-entry-journal { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
 .milestone-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; background: var(--green-dim); color: var(--green); margin-left: 6px; font-weight: 500; }
 .empty-log { font-size: 13px; color: var(--muted); font-style: italic; padding: 1rem 0; }
+.digest-section { margin-top: 1.5rem; }
+.digest-btn { width: 100%; justify-content: center; background: var(--surface); border-color: var(--purple); color: var(--purple-lt); font-size: 14px; padding: 12px; margin-bottom: 1rem; }
+.digest-btn:hover { background: var(--purple-dim); color: var(--purple-lt); }
 
 /* -- Auth -- */
 .auth-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1.5rem; }
@@ -315,18 +318,7 @@ textarea::placeholder { color: var(--muted); }
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save Arlo's entry
         </button>
-        <button class="btn" id="rec-btn-arlo">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Get recommendations
-        </button>
-      </div>
 
-      <div class="ai-box" id="ai-box-arlo" hidden>
-        <div class="ai-box-label">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          AI recommendations for Arlo
-        </div>
-        <div class="ai-text" id="ai-text-arlo"></div>
       </div>
 
       <section class="log-section">
@@ -376,18 +368,7 @@ textarea::placeholder { color: var(--muted); }
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           Save Alma's entry
         </button>
-        <button class="btn" id="rec-btn-alma">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Get recommendations
-        </button>
-      </div>
 
-      <div class="ai-box" id="ai-box-alma" hidden>
-        <div class="ai-box-label">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          AI recommendations for Alma
-        </div>
-        <div class="ai-text" id="ai-text-alma"></div>
       </div>
 
       <section class="log-section">
@@ -396,195 +377,39 @@ textarea::placeholder { color: var(--muted); }
       </section>
     </div>
 
+
+    <!-- Combined AI digest -->
+    <div class="digest-section">
+      <button class="btn digest-btn" id="digest-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Get today's digest
+      </button>
+      <div class="ai-box" id="ai-box-digest" hidden>
+        <div class="ai-box-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Today's pride digest
+        </div>
+        <div class="ai-text" id="ai-text-digest"></div>
+      </div>
+    </div>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-// CONFIG
-const SUPABASE_URL      = 'https://jpeehbkdtxzjwyujxrhm.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwZWVoYmtkdHh6and5dWp4cmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNDAxODAsImV4cCI6MjA5NzcxNjE4MH0.b-OMS8OmAgeD3YoGn7eZAkCiXSBR5-LxhheTyaGGWno';
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var SUPABASE_URL = 'https://jpeehbkdtxzjwyujxrhm.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwZWVoYmtkdHh6and5dWp4cmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNDAxODAsImV4cCI6MjA5NzcxNjE4MH0.b-OMS8OmAgeD3YoGn7eZAkCiXSBR5-LxhheTyaGGWno';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var START_DATE = new Date('2026-06-20');
 
-// HELPERS
-const START_DATE = new Date('2026-06-20');
 function daysSince() { return Math.max(1, Math.floor((new Date() - START_DATE) / 86400000) + 1); }
 function todayKey()  { return new Date().toISOString().slice(0, 10); }
 function todayLabel(){ return new Date().toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'}); }
 
-// MIGRATION from localStorage v1
-async function migrateFromLocalStorage() {
-  var raw = localStorage.getItem('the-pride-entries');
-  if (!raw) return;
-  try {
-    var all = JSON.parse(raw);
-    var rows = [];
-    ['arlo','alma'].forEach(function(cat) {
-      if (!all[cat]) return;
-      Object.values(all[cat]).forEach(function(e) { rows.push(e); });
-    });
-    if (!rows.length) { localStorage.removeItem('the-pride-entries'); return; }
-    var result = await db.from('entries').upsert(rows, {onConflict:'cat,entry_date'});
-    if (!result.error) { localStorage.removeItem('the-pride-entries'); }
-  } catch(err) { console.warn('Migration skipped:', err); }
-}
-
-// DATA
-async function fetchEntries(cat) {
-  try {
-    var result = await db.from('entries').select('*').eq('cat', cat).order('entry_date', {ascending:false}).limit(30);
-    if (result.error) { console.error(result.error); return []; }
-    return result.data || [];
-  } catch(err) { console.error(err); return []; }
-}
-
-async function upsertEntry(entry) {
-  try {
-    var result = await db.from('entries').upsert(entry, {onConflict:'cat,entry_date'});
-    if (result.error) { console.error(result.error); return false; }
-    return true;
-  } catch(err) { console.error(err); return false; }
-}
-
-// FORM STATE
-function getFormState(cat) {
-  var mood = null;
-  var behaviors = [];
-  document.querySelectorAll('.mood-btn[data-cat="' + cat + '"].selected').forEach(function(b) { mood = b.dataset.mood; });
-  document.querySelectorAll('input[type=checkbox][data-cat="' + cat + '"]:checked').forEach(function(c) { behaviors.push(c.dataset.behavior); });
-  return { mood: mood, behaviors: behaviors, journal: document.getElementById('journal-' + cat).value.trim() };
-}
-
-// SAVE
-async function saveEntry(cat) {
-  var btn = document.getElementById('save-btn-' + cat);
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
-  var s = getFormState(cat);
-  var ok = await upsertEntry({ cat: cat, entry_date: todayKey(), mood: s.mood, behaviors: s.behaviors, journal: s.journal });
-  if (ok) {
-    btn.textContent = 'Saved!';
-    setTimeout(function() {
-      btn.textContent = cat === 'arlo' ? "Save Arlo's entry" : "Save Alma's entry";
-      btn.disabled = false;
-    }, 1800);
-    await renderLog(cat);
-  } else {
-    btn.textContent = 'Error - try again';
-    btn.disabled = false;
-  }
-}
-
-// RENDER LOG
-async function renderLog(cat) {
-  var entries = await fetchEntries(cat);
-  var el = document.getElementById('log-' + cat);
-  var name = cat === 'arlo' ? 'Arlo' : 'Alma';
-  if (!entries.length) {
-    el.innerHTML = '<div class="empty-log">No entries yet - save today\'s check-in to start the log.</div>';
-    return;
-  }
-  el.innerHTML = entries.map(function(e) {
-    var b = e.behaviors || [];
-    var tags = '';
-    if (b.indexOf('allowed-touch') !== -1) tags += '<span class="milestone-tag">First touch - ' + name + '</span>';
-    if (b.indexOf('slow-blink') !== -1) tags += '<span class="milestone-tag">Slow blink returned</span>';
-    var pill = e.mood ? '<span class="mood-pill ' + cat + '">' + e.mood + '</span>' : '';
-    var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
-    var journal = e.journal ? '<div class="log-entry-journal">' + e.journal + '</div>' : '';
-    return '<div class="log-entry"><div class="log-entry-header"><span class="log-entry-date">' + d + tags + '</span>' + pill + '</div>' + journal + '</div>';
-  }).join('');
-  var activeDays = entries.filter(function(e) { return (e.behaviors || []).length > 0; }).length;
-  document.getElementById(cat + '-active-days').textContent = activeDays ? activeDays + ' active days' : '';
-}
-
-// AI DIGEST
-async function getRecommendations(cat) {
-  var aiBox  = document.getElementById('ai-box-' + cat);
-  var aiText = document.getElementById('ai-text-' + cat);
-  aiBox.removeAttribute('hidden');
-  aiText.innerHTML = '<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Building digest...</span></div>';
-
-  var s = getFormState(cat);
-  var entries = await fetchEntries(cat);
-  var isArlo = cat === 'arlo';
-  var name = isArlo ? 'Arlo' : 'Alma';
-
-  var totalDays  = entries.length;
-  var activeDays = entries.filter(function(e) { return (e.behaviors||[]).length > 0; }).length;
-  var playful    = entries.filter(function(e) { return e.mood === 'playful'; }).length;
-  var curious    = entries.filter(function(e) { return e.mood === 'curious'; }).length;
-  var hiding     = entries.filter(function(e) { return e.mood === 'hiding'; }).length;
-  var touched    = entries.filter(function(e) { return (e.behaviors||[]).indexOf('allowed-touch') !== -1; }).length;
-  var blinked    = entries.filter(function(e) { return (e.behaviors||[]).indexOf('slow-blink') !== -1; }).length;
-  var played     = entries.filter(function(e) { return (e.behaviors||[]).indexOf('played') !== -1; }).length;
-  var nearMe     = entries.filter(function(e) { return (e.behaviors||[]).indexOf('near-me') !== -1; }).length;
-
-  var recentHistory = entries.slice(0,7).map(function(e) {
-    var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric'});
-    var note = e.journal ? ', note: "' + e.journal + '"' : '';
-    return d + ': mood(' + (e.mood||'?') + '), behaviors: ' + ((e.behaviors||[]).join(', ')||'none') + note;
-  }).join('\n');
-
-  var context = isArlo
-    ? '- Arlo is the cautious brother. Comes out to eat and plays with wand/laser toys but has been slow to accept touch. Adopted at 6 months, past the prime socialization window.\n- Kristopher practices slow blink + look away, keeps a worn t-shirt near Arlo\'s safe spot, and lets Arlo initiate all contact.'
-    : '- Alma is the social sister, warming up quickly, coming up for pets and engaging with Kristopher readily.';
-
-  var prompt = 'You are a warm, knowledgeable cat behavior expert helping Kristopher, a devoted cat parent.\n\n'
-    + 'He adopted two bonded 6-month-old sibling kittens on June 20 2026 - a brother (Arlo) and sister (Alma).\n'
-    + context
-    + '\n\nStats for ' + name + ' across ' + totalDays + ' logged days:\n'
-    + '- Active behavior days: ' + activeDays + '\n'
-    + '- Playful mood: ' + playful + ' | Curious: ' + curious + ' | Hiding: ' + hiding + '\n'
-    + '- Responded to play: ' + played + ' days\n'
-    + '- Stayed near Kristopher: ' + nearMe + ' days\n'
-    + '- Allowed touch: ' + touched + ' days\n'
-    + '- Slow blink returned: ' + blinked + ' days\n\n'
-    + "Today's check-in:\nMood: " + (s.mood||'not noted') + '\nBehaviors: ' + (s.behaviors.join(', ')||'none') + '\nJournal: ' + (s.journal||'no notes') + '\n\n'
-    + 'Last 7 entries:\n' + (recentHistory||'No entries yet.') + '\n\n'
-    + 'Write a warm AI digest with three sections:\n'
-    + '1. **Progress summary** - what the trend data shows about ' + name + "'s journey so far (2-3 sentences)\n"
-    + "2. **Today's highlights** - what stood out from today's check-in (1-2 sentences)\n"
-    + "3. **Tomorrow's focus** - 2-3 specific, actionable things to try tomorrow\n\n"
-    + 'Be encouraging, specific, and grounded in the actual data. '
-    + (isArlo ? 'Acknowledge even small wins for Arlo warmly.' : "Celebrate Alma's social progress and suggest ways to keep building on it.");
-
-  try {
-    var res = await fetch('https://jpeehbkdtxzjwyujxrhm.supabase.co/functions/v1/ai-digest', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
-      body: JSON.stringify({ prompt: prompt })
-    });
-    var data = await res.json();
-    var text = '';
-    if (data.content) {
-      data.content.forEach(function(b) { if (b.type === 'text') text += b.text; });
-    }
-    if (!text) text = 'No digest returned.';
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    aiText.innerHTML = text.split(/\n\n+/).map(function(p) { return '<p>' + p.trim() + '</p>'; }).join('');
-  } catch(err) {
-    console.error(err);
-    aiText.innerHTML = '<p style="color:#F87171">Could not reach AI - check your connection and try again.</p>';
-  }
-}
-
-// TAB SWITCHING
-function switchTab(cat) {
-  document.getElementById('tab-arlo').classList.remove('active');
-  document.getElementById('tab-alma').classList.remove('active');
-  document.getElementById('tab-arlo').setAttribute('aria-selected','false');
-  document.getElementById('tab-alma').setAttribute('aria-selected','false');
-  document.getElementById('panel-arlo').classList.remove('active');
-  document.getElementById('panel-alma').classList.remove('active');
-  document.getElementById('tab-' + cat).classList.add('active');
-  document.getElementById('tab-' + cat).setAttribute('aria-selected','true');
-  document.getElementById('panel-' + cat).classList.add('active');
-}
-
-// AUTH HELPERS
-async function hashPin(pin) {
-  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
-  return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+function hashPin(pin) {
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin)).then(function(buf) {
+    return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+  });
 }
 
 function showAuthTab(tab) {
@@ -604,22 +429,22 @@ function showApp() {
   });
 }
 
-async function login() {
+function login() {
   var username = document.getElementById('login-username').value.trim().toLowerCase();
   var pin      = document.getElementById('login-pin').value.trim();
   var errEl    = document.getElementById('login-error');
   errEl.textContent = '';
   if (!username || !pin) { errEl.textContent = 'Please enter your username and PIN.'; return; }
-  var hashed = await hashPin(pin);
-  try {
-    var result = await db.from('users').select('username').eq('username', username).eq('pin', hashed);
-    if (result.error || !result.data.length) { errEl.textContent = 'Incorrect username or PIN.'; return; }
-    sessionStorage.setItem('pride-user', username);
-    showApp();
-  } catch(err) { errEl.textContent = 'Error: ' + err.message; }
+  hashPin(pin).then(function(hashed) {
+    db.from('users').select('username').eq('username', username).eq('pin', hashed).then(function(result) {
+      if (result.error || !result.data.length) { errEl.textContent = 'Incorrect username or PIN.'; return; }
+      sessionStorage.setItem('pride-user', username);
+      showApp();
+    });
+  }).catch(function(err) { errEl.textContent = 'Error: ' + err.message; });
 }
 
-async function signup() {
+function signup() {
   var username = document.getElementById('signup-username').value.trim().toLowerCase();
   var pin      = document.getElementById('signup-pin').value.trim();
   var pin2     = document.getElementById('signup-pin2').value.trim();
@@ -628,15 +453,16 @@ async function signup() {
   if (!username) { errEl.textContent = 'Please choose a username.'; return; }
   if (pin.length !== 4 || !/^\d+$/.test(pin)) { errEl.textContent = 'PIN must be exactly 4 digits.'; return; }
   if (pin !== pin2) { errEl.textContent = 'PINs do not match.'; return; }
-  var hashed = await hashPin(pin);
-  try {
-    var check = await db.from('users').select('username').eq('username', username);
-    if (check.data && check.data.length) { errEl.textContent = 'Username already taken.'; return; }
-    var result = await db.from('users').insert({ username: username, pin: hashed });
-    if (result.error) { errEl.textContent = 'Error: ' + result.error.message; return; }
-    sessionStorage.setItem('pride-user', username);
-    showApp();
-  } catch(err) { errEl.textContent = 'Error: ' + err.message; }
+  hashPin(pin).then(function(hashed) {
+    db.from('users').select('username').eq('username', username).then(function(check) {
+      if (check.data && check.data.length) { errEl.textContent = 'Username already taken.'; return; }
+      db.from('users').insert({ username: username, pin: hashed }).then(function(result) {
+        if (result.error) { errEl.textContent = 'Error: ' + result.error.message; return; }
+        sessionStorage.setItem('pride-user', username);
+        showApp();
+      });
+    });
+  }).catch(function(err) { errEl.textContent = 'Error: ' + err.message; });
 }
 
 function logout() {
@@ -644,18 +470,186 @@ function logout() {
   document.getElementById('auth-screen').classList.remove('hidden');
 }
 
-// INIT
+function migrateFromLocalStorage() {
+  var raw = localStorage.getItem('the-pride-entries');
+  if (!raw) return Promise.resolve();
+  try {
+    var all = JSON.parse(raw);
+    var rows = [];
+    ['arlo','alma'].forEach(function(cat) {
+      if (!all[cat]) return;
+      Object.values(all[cat]).forEach(function(e) { rows.push(e); });
+    });
+    if (!rows.length) { localStorage.removeItem('the-pride-entries'); return Promise.resolve(); }
+    return db.from('entries').upsert(rows, {onConflict:'cat,entry_date'}).then(function(result) {
+      if (!result.error) localStorage.removeItem('the-pride-entries');
+    });
+  } catch(e) { return Promise.resolve(); }
+}
+
+function fetchEntries(cat) {
+  return db.from('entries').select('*').eq('cat', cat).order('entry_date', {ascending:false}).limit(30).then(function(result) {
+    if (result.error) { console.error(result.error); return []; }
+    return result.data || [];
+  }).catch(function(e) { console.error(e); return []; });
+}
+
+function upsertEntry(entry) {
+  return db.from('entries').upsert(entry, {onConflict:'cat,entry_date'}).then(function(result) {
+    if (result.error) { console.error(result.error); return false; }
+    return true;
+  }).catch(function(e) { console.error(e); return false; });
+}
+
+function getFormState(cat) {
+  var mood = null;
+  var behaviors = [];
+  document.querySelectorAll('.mood-btn[data-cat="' + cat + '"].selected').forEach(function(b) { mood = b.dataset.mood; });
+  document.querySelectorAll('input[type=checkbox][data-cat="' + cat + '"]:checked').forEach(function(c) { behaviors.push(c.dataset.behavior); });
+  return { mood: mood, behaviors: behaviors, journal: document.getElementById('journal-' + cat).value.trim() };
+}
+
+function saveEntry(cat) {
+  var btn = document.getElementById('save-btn-' + cat);
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  var s = getFormState(cat);
+  upsertEntry({ cat: cat, entry_date: todayKey(), mood: s.mood, behaviors: s.behaviors, journal: s.journal }).then(function(ok) {
+    if (ok) {
+      btn.textContent = 'Saved!';
+      setTimeout(function() {
+        btn.textContent = cat === 'arlo' ? "Save Arlo's entry" : "Save Alma's entry";
+        btn.disabled = false;
+      }, 1800);
+      renderLog(cat);
+    } else {
+      btn.textContent = 'Error - try again';
+      btn.disabled = false;
+    }
+  });
+}
+
+function renderLog(cat) {
+  fetchEntries(cat).then(function(entries) {
+    var el = document.getElementById('log-' + cat);
+    var name = cat === 'arlo' ? 'Arlo' : 'Alma';
+    if (!entries.length) {
+      el.innerHTML = '<div class="empty-log">No entries yet - save today\'s check-in to start the log.</div>';
+      return;
+    }
+    el.innerHTML = entries.map(function(e) {
+      var b = e.behaviors || [];
+      var tags = '';
+      if (b.indexOf('allowed-touch') !== -1) tags += '<span class="milestone-tag">First touch - ' + name + '</span>';
+      if (b.indexOf('slow-blink') !== -1) tags += '<span class="milestone-tag">Slow blink returned</span>';
+      var pill = e.mood ? '<span class="mood-pill ' + cat + '">' + e.mood + '</span>' : '';
+      var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
+      var journal = e.journal ? '<div class="log-entry-journal">' + e.journal + '</div>' : '';
+      return '<div class="log-entry"><div class="log-entry-header"><span class="log-entry-date">' + d + tags + '</span>' + pill + '</div>' + journal + '</div>';
+    }).join('');
+    var activeDays = entries.filter(function(e) { return (e.behaviors || []).length > 0; }).length;
+    document.getElementById(cat + '-active-days').textContent = activeDays ? activeDays + ' active days' : '';
+  });
+}
+
+function buildStats(entries) {
+  var s = { total:0, active:0, playful:0, curious:0, hiding:0, touched:0, blinked:0, played:0, nearMe:0 };
+  s.total   = entries.length;
+  s.active  = entries.filter(function(e) { return (e.behaviors||[]).length > 0; }).length;
+  s.playful = entries.filter(function(e) { return e.mood === 'playful'; }).length;
+  s.curious = entries.filter(function(e) { return e.mood === 'curious'; }).length;
+  s.hiding  = entries.filter(function(e) { return e.mood === 'hiding';  }).length;
+  s.touched = entries.filter(function(e) { return (e.behaviors||[]).indexOf('allowed-touch') !== -1; }).length;
+  s.blinked = entries.filter(function(e) { return (e.behaviors||[]).indexOf('slow-blink') !== -1; }).length;
+  s.played  = entries.filter(function(e) { return (e.behaviors||[]).indexOf('played') !== -1; }).length;
+  s.nearMe  = entries.filter(function(e) { return (e.behaviors||[]).indexOf('near-me') !== -1; }).length;
+  return s;
+}
+
+function buildHistory(entries) {
+  return entries.slice(0,5).map(function(e) {
+    var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric'});
+    var note = e.journal ? ', note: "' + e.journal + '"' : '';
+    return d + ': mood(' + (e.mood||'?') + '), behaviors: ' + ((e.behaviors||[]).join(', ')||'none') + note;
+  }).join('\n');
+}
+
+function getDigest() {
+  var aiBox  = document.getElementById('ai-box-digest');
+  var aiText = document.getElementById('ai-text-digest');
+  aiBox.removeAttribute('hidden');
+  aiText.innerHTML = '<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Building today\'s digest...</span></div>';
+
+  var arloState = getFormState('arlo');
+  var almaState = getFormState('alma');
+
+  Promise.all([fetchEntries('arlo'), fetchEntries('alma')]).then(function(results) {
+    var arloEntries = results[0];
+    var almaEntries = results[1];
+    var as = buildStats(arloEntries);
+    var ms = buildStats(almaEntries);
+
+    var prompt = 'You are a warm, knowledgeable cat behavior expert helping Kristopher, a devoted cat parent. '
+      + 'He adopted two bonded 6-month-old sibling kittens on June 20 2026 - a cautious brother (Arlo) and social sister (Alma). '
+      + 'Arlo plays with toys but avoids touch, retreats to his safe spot. Kristopher uses slow blink + look away, a worn t-shirt near Arlo\'s spot, and lets Arlo initiate contact. '
+      + 'Alma warms up quickly, comes up for pets readily. '
+      + 'ARLO ' + as.total + ' days: active=' + as.active + ' playful=' + as.playful + ' curious=' + as.curious + ' hiding=' + as.hiding + ' played=' + as.played + ' nearMe=' + as.nearMe + ' touched=' + as.touched + ' blinked=' + as.blinked + '. '
+      + 'Arlo recent: ' + (buildHistory(arloEntries)||'none') + '. '
+      + 'Arlo today: mood=' + (arloState.mood||'not noted') + ' behaviors=' + (arloState.behaviors.join(',')||'none') + ' journal="' + (arloState.journal||'no notes') + '". '
+      + 'ALMA ' + ms.total + ' days: active=' + ms.active + ' playful=' + ms.playful + ' curious=' + ms.curious + ' hiding=' + ms.hiding + ' played=' + ms.played + ' nearMe=' + ms.nearMe + ' touched=' + ms.touched + ' blinked=' + ms.blinked + '. '
+      + 'Alma recent: ' + (buildHistory(almaEntries)||'none') + '. '
+      + 'Alma today: mood=' + (almaState.mood||'not noted') + ' behaviors=' + (almaState.behaviors.join(',')||'none') + ' journal="' + (almaState.journal||'no notes') + '". '
+      + 'Write a warm combined daily digest with 4 sections: '
+      + '1. **The Pride today** - brief warm overview of both cats (2-3 sentences). '
+      + '2. **Arlo** - progress summary and 2-3 specific things to try tomorrow. '
+      + '3. **Alma** - progress and 1-2 things to keep building on. '
+      + '4. **A note for Kristopher** - one encouraging sentence grounded in the data. '
+      + 'Be warm, specific, concise. Acknowledge even small wins for Arlo.';
+
+    fetch('https://jpeehbkdtxzjwyujxrhm.supabase.co/functions/v1/ai-digest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+      body: JSON.stringify({ prompt: prompt })
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      var text = '';
+      if (data.content) {
+        data.content.forEach(function(b) { if (b.type === 'text') text += b.text; });
+      }
+      if (!text) text = 'No digest returned.';
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      aiText.innerHTML = text.split(/\n\n+/).map(function(p) { return '<p>' + p.trim() + '</p>'; }).join('');
+    }).catch(function(err) {
+      console.error(err);
+      aiText.innerHTML = '<p style="color:#F87171">Could not reach AI - check your connection and try again.</p>';
+    });
+  });
+}
+
+function switchTab(cat) {
+  document.getElementById('tab-arlo').classList.remove('active');
+  document.getElementById('tab-alma').classList.remove('active');
+  document.getElementById('tab-arlo').setAttribute('aria-selected','false');
+  document.getElementById('tab-alma').setAttribute('aria-selected','false');
+  document.getElementById('panel-arlo').classList.remove('active');
+  document.getElementById('panel-alma').classList.remove('active');
+  document.getElementById('tab-' + cat).classList.add('active');
+  document.getElementById('tab-' + cat).setAttribute('aria-selected','true');
+  document.getElementById('panel-' + cat).classList.add('active');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('tab-arlo').addEventListener('click', function() { switchTab('arlo'); });
   document.getElementById('tab-alma').addEventListener('click', function() { switchTab('alma'); });
   document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
   document.getElementById('save-btn-alma').addEventListener('click', function() { saveEntry('alma'); });
-  document.getElementById('rec-btn-arlo').addEventListener('click', function() { getRecommendations('arlo'); });
-  document.getElementById('rec-btn-alma').addEventListener('click', function() { getRecommendations('alma'); });
+  document.getElementById('digest-btn').addEventListener('click', getDigest);
   document.getElementById('login-btn').addEventListener('click', login);
   document.getElementById('signup-btn').addEventListener('click', signup);
   document.getElementById('logout-btn').addEventListener('click', logout);
-
+  document.getElementById('auth-tab-login').addEventListener('click', function() { showAuthTab('login'); });
+  document.getElementById('auth-tab-signup').addEventListener('click', function() { showAuthTab('signup'); });
   document.getElementById('login-pin').addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
   document.getElementById('signup-pin2').addEventListener('keydown', function(e) { if (e.key === 'Enter') signup(); });
 
@@ -669,13 +663,10 @@ document.addEventListener('DOMContentLoaded', function() {
     cb.addEventListener('change', function() { cb.closest('.behavior-row').classList.toggle('checked', cb.checked); });
   });
 
-  // Check for existing session
-  var session = sessionStorage.getItem('pride-user');
-  if (session) {
+  if (sessionStorage.getItem('pride-user')) {
     showApp();
   }
 });
-
   </script>
 </body>
 </html>
