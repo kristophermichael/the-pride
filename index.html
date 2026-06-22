@@ -317,6 +317,17 @@ textarea::placeholder { color: var(--muted); }
 
   </main>
 
+  <script>
+// ── Tab switching — defined early so onclick always works ─────
+function switchTab(cat) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.querySelectorAll('.cat-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelector('.tab-btn.' + cat).classList.add('active');
+  document.querySelector('.tab-btn.' + cat).setAttribute('aria-selected','true');
+  document.getElementById('panel-' + cat).classList.add('active');
+}
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
 // ============================================================
@@ -332,14 +343,6 @@ function daysSince() { return Math.max(1, Math.floor((new Date() - START_DATE) /
 function todayKey()   { return new Date().toISOString().slice(0, 10); }
 function todayLabel() { return new Date().toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' }); }
 
-// ── Tab switching ─────────────────────────────────────────────
-function switchTab(cat) {
-  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-  document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`.tab-btn.${cat}`).classList.add('active');
-  document.querySelector(`.tab-btn.${cat}`).setAttribute('aria-selected','true');
-  document.getElementById(`panel-${cat}`).classList.add('active');
-}
 
 // ── Supabase ─────────────────────────────────────────────────
 async function fetchEntries(cat) {
