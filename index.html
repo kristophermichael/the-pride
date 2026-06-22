@@ -1,1 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Pride 🐾</title>
+  <script>
+(function() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 180; canvas.height = 180;
+  const ctx = canvas.getContext('2d');
+  const r = 36;
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.arcTo(180, 0, 180, 180, r);
+  ctx.arcTo(180, 180, 0, 180, r);
+  ctx.arcTo(0, 180, 0, 0, r);
+  ctx.arcTo(0, 0, 180, 0, r);
+  ctx.closePath();
+  ctx.fillStyle = '#0F0E17';
+  ctx.fill();
+  ctx.strokeStyle = '#7C3AED';
+  ctx.lineWidth = 10;
+  ctx.stroke();
+  ctx.font = '120px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('\u{1F43E}', 90, 95);
+  const url = canvas.toDataURL('image/png');
+  const link32 = document.createElement('link');
+  link32.rel = 'icon'; link32.type = 'image/png'; link32.href = url;
+  const linkApple = document.createElement('link');
+  linkApple.rel = 'apple-touch-icon'; linkApple.href = url;
+  document.head.appendChild(link32);
+  document.head.appendChild(linkApple);
+})();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+:root {
+  --bg:        #0F0E17;
+  --surface:   #1A1825;
+  --surface2:  #242235;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --purple:    #7C3AED;
+  --purple-lt: #A78BFA;
+  --purple-dim:#3D2080;
+  --amber:     #F59E0B;
+  --amber-lt:  #FCD34D;
+  --amber-dim: #78400A;
+  --text:      #E8E6F0;
+  --muted:     #7875A0;
+  --green:     #34D399;
+  --green-dim: #064E3B;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+}
+
+body { font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* -- Header -- */
+.app-header { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+.header-inner { max-width: 720px; margin: 0 auto; padding: 14px 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-paw { font-size: 20px; }
+h1 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); letter-spacing: -0.01em; }
+.header-date { font-size: 13px; color: var(--muted); }
+
+/* -- Main -- */
+.app-main { max-width: 720px; margin: 0 auto; padding: 1.5rem; }
+
+/* -- Day strip -- */
+.day-strip { margin-bottom: 1.25rem; }
+.day-chip { display: inline-flex; align-items: baseline; gap: 6px; background: var(--surface); border: 0.5px solid var(--border); border-radius: 99px; padding: 5px 14px; }
+.day-num { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--purple-lt); }
+.day-label { font-size: 12px; color: var(--muted); }
+
+/* -- Cat tabs -- */
+.cat-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 5px; }
+.tab-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 16px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+  border: none; border-radius: var(--radius-md); background: transparent;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.tab-btn:hover { color: var(--text); background: var(--surface2); }
+.tab-btn.active.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.tab-btn.active.alma { background: var(--amber-dim); color: var(--amber-lt); }
+.tab-avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; pointer-events: none; }
+.tab-avatar.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.tab-avatar.alma { background: var(--amber-dim); color: var(--amber-lt); }
+.tab-btn.active .tab-avatar.arlo { background: var(--purple); color: #fff; }
+.tab-btn.active .tab-avatar.alma { background: var(--amber); color: #fff; }
+
+/* -- Cat panel -- */
+.cat-panel { display: none; }
+.cat-panel.active { display: block; }
+
+/* -- Card -- */
+.card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.cat-avatar-lg { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 18px; flex-shrink: 0; }
+.cat-avatar-lg.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.cat-avatar-lg.alma { background: var(--amber-dim); color: var(--amber-lt); }
+.cat-name { font-size: 17px; font-weight: 600; color: var(--text); }
+.cat-role { font-size: 12px; color: var(--muted); }
+.cat-active-days { margin-left: auto; font-size: 12px; color: var(--muted); }
+
+/* -- Field label -- */
+.field-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+
+/* -- Mood buttons -- */
+.mood-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 1.25rem; }
+.mood-btn {
+  padding: 8px 4px; font-size: 12px; font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid var(--border2); border-radius: var(--radius-md);
+  background: var(--surface2); color: var(--muted);
+  cursor: pointer; transition: all 0.12s; text-align: center;
+}
+.mood-btn:hover { color: var(--text); border-color: var(--border2); }
+.mood-btn.selected.arlo { background: var(--purple-dim); color: var(--purple-lt); border-color: var(--purple); font-weight: 500; }
+.mood-btn.selected.alma { background: var(--amber-dim); color: var(--amber-lt); border-color: var(--amber); font-weight: 500; }
+
+/* -- Behaviors -- */
+.behaviors { display: flex; flex-direction: column; gap: 8px; }
+.behavior-row { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--muted); transition: color 0.12s; user-select: none; }
+.behavior-row:hover { color: var(--text); }
+.behavior-row input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--purple-lt); flex-shrink: 0; }
+.cat-panel.alma-panel .behavior-row input[type=checkbox] { accent-color: var(--amber-lt); }
+.behavior-row.checked span { color: var(--text); font-weight: 500; }
+
+/* -- Journal -- */
+.journal-section { margin-bottom: 1.25rem; }
+.journal-section .field-label { display: block; margin-bottom: 8px; }
+textarea {
+  width: 100%; min-height: 90px; padding: 10px 14px;
+  font-size: 14px; font-family: 'DM Sans', sans-serif; line-height: 1.6;
+  border: 0.5px solid var(--border2); border-radius: var(--radius-md);
+  background: var(--surface2); color: var(--text); resize: vertical;
+  transition: border-color 0.12s;
+}
+textarea:focus { outline: none; border-color: var(--purple-lt); }
+textarea::placeholder { color: var(--muted); }
+.cat-panel.alma-panel textarea:focus { border-color: var(--amber-lt); }
+
+/* -- Actions -- */
+.action-row { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.action-row .btn { min-width: 170px; justify-content: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500;
+  border: 0.5px solid var(--border2); border-radius: var(--radius-md);
+  background: var(--surface2); color: var(--text); cursor: pointer; transition: all 0.12s;
+}
+.btn:hover { background: var(--surface); border-color: var(--border2); }
+.btn:active { transform: scale(0.98); }
+.btn.primary-arlo { background: var(--purple); color: #fff; border-color: var(--purple); }
+.btn.primary-arlo:hover { background: var(--purple-dim); border-color: var(--purple); }
+.btn.primary-alma { background: var(--amber); color: #fff; border-color: var(--amber); }
+.btn.primary-alma:hover { background: var(--amber-dim); border-color: var(--amber); }
+
+/* -- AI box -- */
+.ai-box { background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.ai-box[hidden] { display: none; }
+.ai-box-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--purple-lt); margin-bottom: 10px; }
+.cat-panel.alma-panel .ai-box-label { color: var(--amber-lt); }
+.ai-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+.ai-text p + p { margin-top: 10px; }
+.ai-loading { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--purple-lt); animation: blink 1.2s ease-in-out infinite; }
+.cat-panel.alma-panel .dot { background: var(--amber-lt); }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
+
+/* -- Log -- */
+.log-section { margin-top: 0.25rem; }
+.log-header { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+.log-entry { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 8px; }
+.log-entry-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; flex-wrap: wrap; }
+.log-entry-date { font-size: 12px; font-weight: 500; color: var(--text); }
+.mood-pill { font-size: 11px; padding: 2px 10px; border-radius: 99px; }
+.mood-pill.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.mood-pill.alma  { background: var(--amber-dim);  color: var(--amber-lt);  }
+.log-entry-journal { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
+.milestone-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; background: var(--green-dim); color: var(--green); margin-left: 6px; font-weight: 500; }
+.empty-log { font-size: 13px; color: var(--muted); font-style: italic; padding: 1rem 0; }
+
+/* -- Auth -- */
+.auth-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1.5rem; }
+.auth-screen.hidden { display: none; }
+.auth-card { background: var(--surface); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 2rem; width: 100%; max-width: 360px; }
+.auth-logo { text-align: center; margin-bottom: 1.5rem; }
+.auth-logo-paw { font-size: 36px; display: block; margin-bottom: 8px; }
+.auth-logo h2 { font-family: "DM Serif Display", serif; font-size: 24px; font-weight: 400; color: var(--text); }
+.auth-tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: var(--radius-md); padding: 4px; margin-bottom: 1.5rem; }
+.auth-tab { flex: 1; padding: 7px; font-size: 13px; font-weight: 500; font-family: "DM Sans", sans-serif; border: none; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.auth-tab.active { background: var(--purple); color: #fff; }
+.auth-field { margin-bottom: 1rem; }
+.auth-field label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+.auth-field input { width: 100%; padding: 10px 12px; font-size: 14px; font-family: "DM Sans", sans-serif; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-md); color: var(--text); }
+.auth-field input:focus { outline: none; border-color: var(--purple-lt); }
+.auth-btn { width: 100%; padding: 11px; font-size: 14px; font-weight: 500; font-family: "DM Sans", sans-serif; background: var(--purple); color: #fff; border: none; border-radius: var(--radius-md); cursor: pointer; margin-top: 0.5rem; transition: opacity 0.15s; }
+.auth-btn:hover { opacity: 0.88; }
+.auth-error { font-size: 13px; color: #F87171; margin-top: 10px; min-height: 20px; text-align: center; }
+.auth-switch { font-size: 12px; color: var(--muted); text-align: center; margin-top: 1rem; }
+.logout-btn { font-size: 12px; color: var(--muted); background: none; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 4px 10px; cursor: pointer; font-family: "DM Sans", sans-serif; transition: all 0.15s; }
+.logout-btn:hover { color: var(--text); border-color: var(--border2); }
+  </style>
+</head>
+<body>
+
+  
+  <!-- Auth screen -->
+  <div class="auth-screen" id="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="auth-logo-paw">🐾</span>
+        <h2>The Pride</h2>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-tab-login" onclick="showAuthTab('login')">Log in</button>
+        <button class="auth-tab" id="auth-tab-signup" onclick="showAuthTab('signup')">Sign up</button>
+      </div>
+      <div id="auth-login">
+        <div class="auth-field"><label>Username</label><input type="text" id="login-username" placeholder="your username" autocomplete="username" /></div>
+        <div class="auth-field"><label>PIN</label><input type="password" id="login-pin" placeholder="4-digit PIN" maxlength="4" inputmode="numeric" autocomplete="current-password" /></div>
+        <button class="auth-btn" id="login-btn">Log in</button>
+        <div class="auth-error" id="login-error"></div>
+      </div>
+      <div id="auth-signup" style="display:none">
+        <div class="auth-field"><label>Username</label><input type="text" id="signup-username" placeholder="choose a username" autocomplete="username" /></div>
+        <div class="auth-field"><label>PIN</label><input type="password" id="signup-pin" placeholder="choose a 4-digit PIN" maxlength="4" inputmode="numeric" autocomplete="new-password" /></div>
+        <div class="auth-field"><label>Confirm PIN</label><input type="password" id="signup-pin2" placeholder="confirm PIN" maxlength="4" inputmode="numeric" autocomplete="new-password" /></div>
+        <button class="auth-btn" id="signup-btn">Create account</button>
+        <div class="auth-error" id="signup-error"></div>
+      </div>
+    </div>
+  </div>
+
+<header class="app-header">
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="header-paw">🐾</span>
+        <h1>The Pride</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px"><span class="header-date" id="today-date"></span><button class="logout-btn" id="logout-btn">Log out</button></div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <div class="day-strip">
+      <div class="day-chip">
+        <span class="day-num" id="day-count">--</span>
+        <span class="day-label">days together</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="cat-tabs" role="tablist">
+      <button id="tab-arlo" class="tab-btn arlo active" role="tab" aria-selected="true">
+        <span class="tab-avatar arlo">A</span>
+        Arlo
+      </button>
+      <button id="tab-alma" class="tab-btn alma" role="tab" aria-selected="false">
+        <span class="tab-avatar alma">A</span>
+        Alma
+      </button>
+    </div>
+
+    <!-- Arlo panel -->
+    <div class="cat-panel arlo-panel active" id="panel-arlo" role="tabpanel">
+      <div class="card">
+        <div class="card-header">
+          <div class="cat-avatar-lg arlo">A</div>
+          <div>
+            <div class="cat-name">Arlo</div>
+            <div class="cat-role">The cautious one</div>
+          </div>
+          <div class="cat-active-days" id="arlo-active-days"></div>
+        </div>
+
+        <div class="field-label">Mood today</div>
+        <div class="mood-row">
+          <button class="mood-btn" data-cat="arlo" data-mood="hiding">Hiding</button>
+          <button class="mood-btn" data-cat="arlo" data-mood="cautious">Cautious</button>
+          <button class="mood-btn" data-cat="arlo" data-mood="curious">Curious</button>
+          <button class="mood-btn" data-cat="arlo" data-mood="playful">Playful</button>
+        </div>
+
+        <div class="field-label">Behaviors</div>
+        <div class="behaviors">
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="came-out" /><span>Came out voluntarily</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="ate-well" /><span>Ate well</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="played" /><span>Responded to play</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="near-me" /><span>Stayed near me</span></label>
+        </div>
+      </div>
+
+      <section class="journal-section">
+        <label class="field-label" for="journal-arlo">Arlo -- journal notes</label>
+        <textarea id="journal-arlo" placeholder="What happened with Arlo today? What worked, what didn't, any milestones..."></textarea>
+      </section>
+
+      <div class="action-row">
+        <button class="btn primary-arlo" id="save-btn-arlo">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Arlo's entry
+        </button>
+        <button class="btn" id="rec-btn-arlo">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Get recommendations
+        </button>
+      </div>
+
+      <div class="ai-box" id="ai-box-arlo" hidden>
+        <div class="ai-box-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          AI recommendations for Arlo
+        </div>
+        <div class="ai-text" id="ai-text-arlo"></div>
+      </div>
+
+      <section class="log-section">
+        <div class="log-header">Arlo's past entries</div>
+        <div id="log-arlo"></div>
+      </section>
+    </div>
+
+    <!-- Alma panel -->
+    <div class="cat-panel alma-panel" id="panel-alma" role="tabpanel">
+      <div class="card">
+        <div class="card-header">
+          <div class="cat-avatar-lg alma">A</div>
+          <div>
+            <div class="cat-name">Alma</div>
+            <div class="cat-role">The social one</div>
+          </div>
+          <div class="cat-active-days" id="alma-active-days"></div>
+        </div>
+
+        <div class="field-label">Mood today</div>
+        <div class="mood-row">
+          <button class="mood-btn" data-cat="alma" data-mood="hiding">Hiding</button>
+          <button class="mood-btn" data-cat="alma" data-mood="cautious">Cautious</button>
+          <button class="mood-btn" data-cat="alma" data-mood="curious">Curious</button>
+          <button class="mood-btn" data-cat="alma" data-mood="playful">Playful</button>
+        </div>
+
+        <div class="field-label">Behaviors</div>
+        <div class="behaviors">
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="came-out" /><span>Came out voluntarily</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="ate-well" /><span>Ate well</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="played" /><span>Responded to play</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="near-me" /><span>Stayed near me</span></label>
+        </div>
+      </div>
+
+      <section class="journal-section">
+        <label class="field-label" for="journal-alma">Alma -- journal notes</label>
+        <textarea id="journal-alma" placeholder="What happened with Alma today? What worked, what didn't, any milestones..."></textarea>
+      </section>
+
+      <div class="action-row">
+        <button class="btn primary-alma" id="save-btn-alma">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Alma's entry
+        </button>
+        <button class="btn" id="rec-btn-alma">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Get recommendations
+        </button>
+      </div>
+
+      <div class="ai-box" id="ai-box-alma" hidden>
+        <div class="ai-box-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          AI recommendations for Alma
+        </div>
+        <div class="ai-text" id="ai-text-alma"></div>
+      </div>
+
+      <section class="log-section">
+        <div class="log-header">Alma's past entries</div>
+        <div id="log-alma"></div>
+      </section>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+// CONFIG
+const SUPABASE_URL      = 'https://jpeehbkdtxzjwyujxrhm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwZWVoYmtkdHh6and5dWp4cmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNDAxODAsImV4cCI6MjA5NzcxNjE4MH0.b-OMS8OmAgeD3YoGn7eZAkCiXSBR5-LxhheTyaGGWno';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// HELPERS
+const START_DATE = new Date('2026-06-20');
+function daysSince() { return Math.max(1, Math.floor((new Date() - START_DATE) / 86400000) + 1); }
+function todayKey()  { return new Date().toISOString().slice(0, 10); }
+function todayLabel(){ return new Date().toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'}); }
+
+// MIGRATION from localStorage v1
+async function migrateFromLocalStorage() {
+  var raw = localStorage.getItem('the-pride-entries');
+  if (!raw) return;
+  try {
+    var all = JSON.parse(raw);
+    var rows = [];
+    ['arlo','alma'].forEach(function(cat) {
+      if (!all[cat]) return;
+      Object.values(all[cat]).forEach(function(e) { rows.push(e); });
+    });
+    if (!rows.length) { localStorage.removeItem('the-pride-entries'); return; }
+    var result = await db.from('entries').upsert(rows, {onConflict:'cat,entry_date'});
+    if (!result.error) { localStorage.removeItem('the-pride-entries'); }
+  } catch(err) { console.warn('Migration skipped:', err); }
+}
+
+// DATA
+async function fetchEntries(cat) {
+  try {
+    var result = await db.from('entries').select('*').eq('cat', cat).order('entry_date', {ascending:false}).limit(30);
+    if (result.error) { console.error(result.error); return []; }
+    return result.data || [];
+  } catch(err) { console.error(err); return []; }
+}
+
+async function upsertEntry(entry) {
+  try {
+    var result = await db.from('entries').upsert(entry, {onConflict:'cat,entry_date'});
+    if (result.error) { console.error(result.error); return false; }
+    return true;
+  } catch(err) { console.error(err); return false; }
+}
+
+// FORM STATE
+function getFormState(cat) {
+  var mood = null;
+  var behaviors = [];
+  document.querySelectorAll('.mood-btn[data-cat="' + cat + '"].selected').forEach(function(b) { mood = b.dataset.mood; });
+  document.querySelectorAll('input[type=checkbox][data-cat="' + cat + '"]:checked').forEach(function(c) { behaviors.push(c.dataset.behavior); });
+  return { mood: mood, behaviors: behaviors, journal: document.getElementById('journal-' + cat).value.trim() };
+}
+
+// SAVE
+async function saveEntry(cat) {
+  var btn = document.getElementById('save-btn-' + cat);
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  var s = getFormState(cat);
+  var ok = await upsertEntry({ cat: cat, entry_date: todayKey(), mood: s.mood, behaviors: s.behaviors, journal: s.journal });
+  if (ok) {
+    btn.textContent = 'Saved!';
+    setTimeout(function() {
+      btn.textContent = cat === 'arlo' ? "Save Arlo's entry" : "Save Alma's entry";
+      btn.disabled = false;
+    }, 1800);
+    await renderLog(cat);
+  } else {
+    btn.textContent = 'Error - try again';
+    btn.disabled = false;
+  }
+}
+
+// RENDER LOG
+async function renderLog(cat) {
+  var entries = await fetchEntries(cat);
+  var el = document.getElementById('log-' + cat);
+  var name = cat === 'arlo' ? 'Arlo' : 'Alma';
+  if (!entries.length) {
+    el.innerHTML = '<div class="empty-log">No entries yet - save today\'s check-in to start the log.</div>';
+    return;
+  }
+  el.innerHTML = entries.map(function(e) {
+    var b = e.behaviors || [];
+    var tags = '';
+    if (b.indexOf('allowed-touch') !== -1) tags += '<span class="milestone-tag">First touch - ' + name + '</span>';
+    if (b.indexOf('slow-blink') !== -1) tags += '<span class="milestone-tag">Slow blink returned</span>';
+    var pill = e.mood ? '<span class="mood-pill ' + cat + '">' + e.mood + '</span>' : '';
+    var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
+    var journal = e.journal ? '<div class="log-entry-journal">' + e.journal + '</div>' : '';
+    return '<div class="log-entry"><div class="log-entry-header"><span class="log-entry-date">' + d + tags + '</span>' + pill + '</div>' + journal + '</div>';
+  }).join('');
+  var activeDays = entries.filter(function(e) { return (e.behaviors || []).length > 0; }).length;
+  document.getElementById(cat + '-active-days').textContent = activeDays ? activeDays + ' active days' : '';
+}
+
+// AI DIGEST
+async function getRecommendations(cat) {
+  var aiBox  = document.getElementById('ai-box-' + cat);
+  var aiText = document.getElementById('ai-text-' + cat);
+  aiBox.removeAttribute('hidden');
+  aiText.innerHTML = '<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Building digest...</span></div>';
+
+  var s = getFormState(cat);
+  var entries = await fetchEntries(cat);
+  var isArlo = cat === 'arlo';
+  var name = isArlo ? 'Arlo' : 'Alma';
+
+  var totalDays  = entries.length;
+  var activeDays = entries.filter(function(e) { return (e.behaviors||[]).length > 0; }).length;
+  var playful    = entries.filter(function(e) { return e.mood === 'playful'; }).length;
+  var curious    = entries.filter(function(e) { return e.mood === 'curious'; }).length;
+  var hiding     = entries.filter(function(e) { return e.mood === 'hiding'; }).length;
+  var touched    = entries.filter(function(e) { return (e.behaviors||[]).indexOf('allowed-touch') !== -1; }).length;
+  var blinked    = entries.filter(function(e) { return (e.behaviors||[]).indexOf('slow-blink') !== -1; }).length;
+  var played     = entries.filter(function(e) { return (e.behaviors||[]).indexOf('played') !== -1; }).length;
+  var nearMe     = entries.filter(function(e) { return (e.behaviors||[]).indexOf('near-me') !== -1; }).length;
+
+  var recentHistory = entries.slice(0,7).map(function(e) {
+    var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric'});
+    var note = e.journal ? ', note: "' + e.journal + '"' : '';
+    return d + ': mood(' + (e.mood||'?') + '), behaviors: ' + ((e.behaviors||[]).join(', ')||'none') + note;
+  }).join('\n');
+
+  var context = isArlo
+    ? '- Arlo is the cautious brother. Comes out to eat and plays with wand/laser toys but has been slow to accept touch. Adopted at 6 months, past the prime socialization window.\n- Kristopher practices slow blink + look away, keeps a worn t-shirt near Arlo\'s safe spot, and lets Arlo initiate all contact.'
+    : '- Alma is the social sister, warming up quickly, coming up for pets and engaging with Kristopher readily.';
+
+  var prompt = 'You are a warm, knowledgeable cat behavior expert helping Kristopher, a devoted cat parent.\n\n'
+    + 'He adopted two bonded 6-month-old sibling kittens on June 20 2026 - a brother (Arlo) and sister (Alma).\n'
+    + context
+    + '\n\nStats for ' + name + ' across ' + totalDays + ' logged days:\n'
+    + '- Active behavior days: ' + activeDays + '\n'
+    + '- Playful mood: ' + playful + ' | Curious: ' + curious + ' | Hiding: ' + hiding + '\n'
+    + '- Responded to play: ' + played + ' days\n'
+    + '- Stayed near Kristopher: ' + nearMe + ' days\n'
+    + '- Allowed touch: ' + touched + ' days\n'
+    + '- Slow blink returned: ' + blinked + ' days\n\n'
+    + "Today's check-in:\nMood: " + (s.mood||'not noted') + '\nBehaviors: ' + (s.behaviors.join(', ')||'none') + '\nJournal: ' + (s.journal||'no notes') + '\n\n'
+    + 'Last 7 entries:\n' + (recentHistory||'No entries yet.') + '\n\n'
+    + 'Write a warm AI digest with three sections:\n'
+    + '1. **Progress summary** - what the trend data shows about ' + name + "'s journey so far (2-3 sentences)\n"
+    + "2. **Today's highlights** - what stood out from today's check-in (1-2 sentences)\n"
+    + "3. **Tomorrow's focus** - 2-3 specific, actionable things to try tomorrow\n\n"
+    + 'Be encouraging, specific, and grounded in the actual data. '
+    + (isArlo ? 'Acknowledge even small wins for Arlo warmly.' : "Celebrate Alma's social progress and suggest ways to keep building on it.");
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    var data = await res.json();
+    var text = '';
+    if (data.content) {
+      data.content.forEach(function(b) { if (b.type === 'text') text += b.text; });
+    }
+    if (!text) text = 'No digest returned.';
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    aiText.innerHTML = text.split(/\n\n+/).map(function(p) { return '<p>' + p.trim() + '</p>'; }).join('');
+  } catch(err) {
+    console.error(err);
+    aiText.innerHTML = '<p style="color:#F87171">Could not reach AI - check your connection and try again.</p>';
+  }
+}
+
+// TAB SWITCHING
+function switchTab(cat) {
+  document.getElementById('tab-arlo').classList.remove('active');
+  document.getElementById('tab-alma').classList.remove('active');
+  document.getElementById('tab-arlo').setAttribute('aria-selected','false');
+  document.getElementById('tab-alma').setAttribute('aria-selected','false');
+  document.getElementById('panel-arlo').classList.remove('active');
+  document.getElementById('panel-alma').classList.remove('active');
+  document.getElementById('tab-' + cat).classList.add('active');
+  document.getElementById('tab-' + cat).setAttribute('aria-selected','true');
+  document.getElementById('panel-' + cat).classList.add('active');
+}
+
+// AUTH HELPERS
+async function hashPin(pin) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+function showAuthTab(tab) {
+  document.getElementById('auth-login').style.display  = tab === 'login'  ? '' : 'none';
+  document.getElementById('auth-signup').style.display = tab === 'signup' ? '' : 'none';
+  document.getElementById('auth-tab-login').classList.toggle('active',  tab === 'login');
+  document.getElementById('auth-tab-signup').classList.toggle('active', tab === 'signup');
+}
+
+function showApp() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('today-date').textContent = todayLabel();
+  document.getElementById('day-count').textContent  = daysSince();
+  migrateFromLocalStorage().then(function() {
+    renderLog('arlo');
+    renderLog('alma');
+  });
+}
+
+async function login() {
+  var username = document.getElementById('login-username').value.trim().toLowerCase();
+  var pin      = document.getElementById('login-pin').value.trim();
+  var errEl    = document.getElementById('login-error');
+  errEl.textContent = '';
+  if (!username || !pin) { errEl.textContent = 'Please enter your username and PIN.'; return; }
+  var hashed = await hashPin(pin);
+  try {
+    var result = await db.from('users').select('username').eq('username', username).eq('pin', hashed);
+    if (result.error || !result.data.length) { errEl.textContent = 'Incorrect username or PIN.'; return; }
+    sessionStorage.setItem('pride-user', username);
+    showApp();
+  } catch(err) { errEl.textContent = 'Error: ' + err.message; }
+}
+
+async function signup() {
+  var username = document.getElementById('signup-username').value.trim().toLowerCase();
+  var pin      = document.getElementById('signup-pin').value.trim();
+  var pin2     = document.getElementById('signup-pin2').value.trim();
+  var errEl    = document.getElementById('signup-error');
+  errEl.textContent = '';
+  if (!username) { errEl.textContent = 'Please choose a username.'; return; }
+  if (pin.length !== 4 || !/^\d+$/.test(pin)) { errEl.textContent = 'PIN must be exactly 4 digits.'; return; }
+  if (pin !== pin2) { errEl.textContent = 'PINs do not match.'; return; }
+  var hashed = await hashPin(pin);
+  try {
+    var check = await db.from('users').select('username').eq('username', username);
+    if (check.data && check.data.length) { errEl.textContent = 'Username already taken.'; return; }
+    var result = await db.from('users').insert({ username: username, pin: hashed });
+    if (result.error) { errEl.textContent = 'Error: ' + result.error.message; return; }
+    sessionStorage.setItem('pride-user', username);
+    showApp();
+  } catch(err) { errEl.textContent = 'Error: ' + err.message; }
+}
+
+function logout() {
+  sessionStorage.removeItem('pride-user');
+  document.getElementById('auth-screen').classList.remove('hidden');
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('tab-arlo').addEventListener('click', function() { switchTab('arlo'); });
+  document.getElementById('tab-alma').addEventListener('click', function() { switchTab('alma'); });
+  document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
+  document.getElementById('save-btn-alma').addEventListener('click', function() { saveEntry('alma'); });
+  document.getElementById('rec-btn-arlo').addEventListener('click', function() { getRecommendations('arlo'); });
+  document.getElementById('rec-btn-alma').addEventListener('click', function() { getRecommendations('alma'); });
+  document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('signup-btn').addEventListener('click', signup);
+  document.getElementById('logout-btn').addEventListener('click', logout);
+
+  document.getElementById('login-pin').addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
+  document.getElementById('signup-pin2').addEventListener('keydown', function(e) { if (e.key === 'Enter') signup(); });
+
+  document.querySelectorAll('.mood-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.mood-btn[data-cat="' + btn.dataset.cat + '"]').forEach(function(b) { b.classList.remove('selected','arlo','alma'); });
+      btn.classList.add('selected', btn.dataset.cat);
+    });
+  });
+  document.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+    cb.addEventListener('change', function() { cb.closest('.behavior-row').classList.toggle('checked', cb.checked); });
+  });
+
+  // Check for existing session
+  var session = sessionStorage.getItem('pride-user');
+  if (session) {
+    showApp();
+  }
+});
+
+  </script>
+</body>
+</html>
