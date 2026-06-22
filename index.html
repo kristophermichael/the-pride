@@ -214,12 +214,12 @@ textarea::placeholder { color: var(--muted); }
 
     <!-- Tabs -->
     <div class="cat-tabs" role="tablist">
-      <button class="tab-btn arlo active" role="tab" aria-selected="true" data-tab="arlo">
-        <div class="tab-avatar arlo">A</div>
+      <button id="tab-arlo" class="tab-btn arlo active" role="tab" aria-selected="true">
+        <span class="tab-avatar arlo">A</span>
         Arlo
       </button>
-      <button class="tab-btn alma" role="tab" aria-selected="false" data-tab="alma">
-        <div class="tab-avatar alma">A</div>
+      <button id="tab-alma" class="tab-btn alma" role="tab" aria-selected="false">
+        <span class="tab-avatar alma">A</span>
         Alma
       </button>
     </div>
@@ -484,15 +484,18 @@ document.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
 
 // ── Tab switching ─────────────────────────────────────────────
 function switchTab(cat) {
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-  document.querySelectorAll('.cat-panel').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelector('.tab-btn[data-tab="' + cat + '"]').classList.add('active');
-  document.querySelector('.tab-btn[data-tab="' + cat + '"]').setAttribute('aria-selected','true');
+  document.getElementById('tab-arlo').classList.remove('active');
+  document.getElementById('tab-alma').classList.remove('active');
+  document.getElementById('tab-arlo').setAttribute('aria-selected','false');
+  document.getElementById('tab-alma').setAttribute('aria-selected','false');
+  document.getElementById('panel-arlo').classList.remove('active');
+  document.getElementById('panel-alma').classList.remove('active');
+  document.getElementById('tab-' + cat).classList.add('active');
+  document.getElementById('tab-' + cat).setAttribute('aria-selected','true');
   document.getElementById('panel-' + cat).classList.add('active');
 }
-document.querySelectorAll('.tab-btn').forEach(function(btn) {
-  btn.addEventListener('click', function(e) { switchTab(e.currentTarget.dataset.tab); });
-});
+document.getElementById('tab-arlo').addEventListener('click', function() { switchTab('arlo'); });
+document.getElementById('tab-alma').addEventListener('click', function() { switchTab('alma'); });
 
 // ── Button event listeners ────────────────────────────────────
 document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
