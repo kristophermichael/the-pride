@@ -190,6 +190,11 @@ textarea::placeholder { color: var(--muted); }
 .log-entry-journal { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
 .milestone-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; background: var(--green-dim); color: var(--green); margin-left: 6px; font-weight: 500; }
 .empty-log { font-size: 13px; color: var(--muted); font-style: italic; padding: 1rem 0; }
+.past-digests-section { margin-top: 0.5rem; }
+.past-digest-entry { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 10px; }
+.past-digest-date { font-size: 12px; font-weight: 600; color: var(--purple-lt); margin-bottom: 8px; }
+.past-digest-content { font-size: 13px; color: var(--text); line-height: 1.7; }
+.past-digest-content p + p { margin-top: 8px; }
 .digest-section { margin-top: 1.5rem; }
 .digest-btn { width: 100%; justify-content: center; background: var(--surface); border-color: var(--purple); color: var(--purple-lt); font-size: 14px; padding: 12px; margin-bottom: 1rem; }
 .digest-btn:hover { background: var(--purple-dim); color: var(--purple-lt); }
@@ -393,6 +398,12 @@ textarea::placeholder { color: var(--muted); }
       </div>
     </div>
 
+    <!-- Past digests -->
+    <div class="past-digests-section">
+      <div class="log-header" style="margin-top:1.5rem">Past digests</div>
+      <div id="past-digests-list"><div class="empty-log">No saved digests yet - run your first digest to start the record.</div></div>
+    </div>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -426,6 +437,7 @@ function showApp() {
   migrateFromLocalStorage().then(function() {
     renderLog('arlo');
     renderLog('alma');
+    renderPastDigests();
   });
 }
 
@@ -574,6 +586,32 @@ function buildHistory(entries) {
   }).join('\n');
 }
 
+function saveDigest(text) {
+  db.from('digests').upsert({ digest_date: todayKey(), content: text }, { onConflict: 'digest_date' }).then(function(result) {
+    if (result.error) { console.error('Digest save error:', result.error); return; }
+    renderPastDigests();
+  });
+}
+
+function renderPastDigests() {
+  db.from('digests').select('*').order('digest_date', { ascending: false }).then(function(result) {
+    var el = document.getElementById('past-digests-list');
+    if (result.error || !result.data || !result.data.length) {
+      el.innerHTML = '<div class="empty-log">No saved digests yet - run your first digest to start the record.</div>';
+      return;
+    }
+    el.innerHTML = result.data.map(function(d) {
+      var date = new Date(d.digest_date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+      var text = d.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      var paras = text.split(/\n\n+/).map(function(p) { return '<p>' + p.trim() + '</p>'; }).join('');
+      return '<div class="past-digest-entry">'
+        + '<div class="past-digest-date">' + date + '</div>'
+        + '<div class="past-digest-content">' + paras + '</div>'
+        + '</div>';
+    }).join('');
+  });
+}
+
 function getDigest() {
   var aiBox  = document.getElementById('ai-box-digest');
   var aiText = document.getElementById('ai-text-digest');
@@ -626,6 +664,7 @@ function getDigest() {
       if (!text) text = 'No digest returned.';
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       aiText.innerHTML = text.split(/\n\n+/).map(function(p) { return '<p>' + p.trim() + '</p>'; }).join('');
+      saveDigest(text);
     }).catch(function(err) {
       console.error(err);
       aiText.innerHTML = '<p style="color:#F87171">Could not reach AI - check your connection and try again.</p>';
