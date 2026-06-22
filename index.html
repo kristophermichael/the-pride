@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Pride</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="header-paw">🐾</span>
+        <h1>The Pride</h1>
+      </div>
+      <span class="header-date" id="today-date"></span>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- Day counter strip -->
+    <div class="day-strip">
+      <div class="day-chip">
+        <span class="day-num" id="day-count">—</span>
+        <span class="day-label">days together</span>
+      </div>
+    </div>
+
+    <!-- Cat cards -->
+    <section class="cats-grid" aria-label="Daily cat check-in">
+
+      <div class="cat-card" id="card-makoa">
+        <div class="cat-card-header">
+          <div class="cat-avatar makoa">M</div>
+          <div>
+            <div class="cat-name">Makoa</div>
+            <div class="cat-role">The cautious one</div>
+          </div>
+          <div class="cat-streak" id="makoa-streak" title="Streak"></div>
+        </div>
+
+        <div class="field-label">Mood today</div>
+        <div class="mood-row" id="mood-makoa">
+          <button class="mood-btn" data-cat="makoa" data-mood="hiding">Hiding</button>
+          <button class="mood-btn" data-cat="makoa" data-mood="cautious">Cautious</button>
+          <button class="mood-btn" data-cat="makoa" data-mood="curious">Curious</button>
+          <button class="mood-btn" data-cat="makoa" data-mood="playful">Playful</button>
+        </div>
+
+        <div class="field-label">Behaviors</div>
+        <div class="behaviors">
+          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="came-out" /><span>Came out voluntarily</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="ate-well" /><span>Ate well</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="played" /><span>Responded to play</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="near-me" /><span>Stayed near me</span></label>
+        </div>
+      </div>
+
+      <div class="cat-card" id="card-maui">
+        <div class="cat-card-header">
+          <div class="cat-avatar maui">M</div>
+          <div>
+            <div class="cat-name">Maui</div>
+            <div class="cat-role">The social one</div>
+          </div>
+          <div class="cat-streak" id="maui-streak" title="Streak"></div>
+        </div>
+
+        <div class="field-label">Mood today</div>
+        <div class="mood-row" id="mood-maui">
+          <button class="mood-btn" data-cat="maui" data-mood="hiding">Hiding</button>
+          <button class="mood-btn" data-cat="maui" data-mood="cautious">Cautious</button>
+          <button class="mood-btn" data-cat="maui" data-mood="curious">Curious</button>
+          <button class="mood-btn" data-cat="maui" data-mood="playful">Playful</button>
+        </div>
+
+        <div class="field-label">Behaviors</div>
+        <div class="behaviors">
+          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="came-out" /><span>Came out voluntarily</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="ate-well" /><span>Ate well</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="played" /><span>Responded to play</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="near-me" /><span>Stayed near me</span></label>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Journal -->
+    <section class="journal-section">
+      <label class="field-label" for="journal-text">Journal — what happened today?</label>
+      <textarea id="journal-text" placeholder="Notes on today's interactions, what worked, what didn't, any milestones worth remembering..."></textarea>
+    </section>
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn primary" id="save-btn" onclick="saveEntry()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save today's entry
+      </button>
+      <button class="btn" id="ai-btn" onclick="getRecommendations()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Get recommendations
+      </button>
+    </div>
+
+    <!-- AI recommendations box -->
+    <div class="ai-box" id="ai-box" hidden>
+      <div class="ai-box-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        AI recommendations
+      </div>
+      <div class="ai-text" id="ai-text"></div>
+    </div>
+
+    <!-- Past entries log -->
+    <section class="log-section">
+      <div class="log-header">Past entries</div>
+      <div id="log-list"></div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
