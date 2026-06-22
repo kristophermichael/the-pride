@@ -488,7 +488,7 @@ function migrateFromLocalStorage() {
 }
 
 function fetchEntries(cat) {
-  return db.from('entries').select('*').eq('cat', cat).order('entry_date', {ascending:false}).limit(30).then(function(result) {
+  return db.from('entries').select('*').eq('cat', cat).order('entry_date', {ascending:false}).limit(1000).then(function(result) {
     if (result.error) { console.error(result.error); return []; }
     return result.data || [];
   }).catch(function(e) { console.error(e); return []; });
@@ -567,7 +567,7 @@ function buildStats(entries) {
 }
 
 function buildHistory(entries) {
-  return entries.slice(0,5).map(function(e) {
+  return entries.map(function(e) {
     var d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric'});
     var note = e.journal ? ', note: "' + e.journal + '"' : '';
     return d + ': mood(' + (e.mood||'?') + '), behaviors: ' + ((e.behaviors||[]).join(', ')||'none') + note;
@@ -590,9 +590,15 @@ function getDigest() {
     var ms = buildStats(almaEntries);
 
     var prompt = 'You are a warm, knowledgeable cat behavior expert helping Kristopher, a devoted cat parent. '
-      + 'He adopted two bonded 6-month-old sibling kittens on June 20 2026 - a cautious brother (Arlo) and social sister (Alma). '
-      + 'Arlo plays with toys but avoids touch, retreats to his safe spot. Kristopher uses slow blink + look away, a worn t-shirt near Arlo\'s spot, and lets Arlo initiate contact. '
-      + 'Alma warms up quickly, comes up for pets readily. '
+      + 'Background: Kristopher recently lost his 13-year-old cat Rajah (named after the tiger in Aladdin) and previously lost his cat Kona at age 7 (named after Kona Cafe at Disney\'s Polynesian Resort). '
+      + 'Arlo and Alma are their emotional successors. Their eventual names will be Makoa (brother) and Maui (sister) - Hawaiian names honoring Kona and Rajah. Kristopher is waiting until both cats are fully comfortable before introducing the new names. '
+      + 'Makoa means fearless and bold in Hawaiian, carrying the Ko from Kona and the -ah sound from Rajah. Maui is the legendary Polynesian demigod, fitting for the charismatic social sister. '
+      + 'ARLO (future Makoa) - the cautious brother: Adopted at 6 months, past the prime socialization window. He eats well and responds to wand and laser toys but is very standoffish. '
+      + 'He avoids being touched, flinches or runs when Kristopher reaches toward him, and retreats to his safe spot after eating or playing. Direct eye contact makes him hesitant. '
+      + 'Kristopher uses: slow blink + look away, a worn t-shirt near Arlo\'s safe spot, the extended finger trick, never following Arlo to his safe spot, and always letting Arlo initiate contact. '
+      + 'Arlo watches his sister interact with Kristopher and is slowly learning she is safe - this social referencing is a key part of his progress. '
+      + 'ALMA (future Maui) - the social sister: Coming out of her shell quickly, approaching Kristopher for pets, engaging readily, and warming up far faster than her brother. '
+      + 'She is the confident one whose comfort around Kristopher is actively helping teach Arlo that humans are safe. Both are bonded siblings who play together and take social cues from each other. '
       + 'ARLO ' + as.total + ' days: active=' + as.active + ' playful=' + as.playful + ' curious=' + as.curious + ' hiding=' + as.hiding + ' played=' + as.played + ' nearMe=' + as.nearMe + ' touched=' + as.touched + ' blinked=' + as.blinked + '. '
       + 'Arlo recent: ' + (buildHistory(arloEntries)||'none') + '. '
       + 'Arlo today: mood=' + (arloState.mood||'not noted') + ' behaviors=' + (arloState.behaviors.join(',')||'none') + ' journal="' + (arloState.journal||'no notes') + '". '
