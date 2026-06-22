@@ -150,6 +150,7 @@ textarea::placeholder { color: var(--muted); }
 
 /* ── Actions ── */
 .action-row { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.action-row .btn { min-width: 170px; justify-content: center; }
 .btn {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 10px 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500;
@@ -348,14 +349,18 @@ textarea::placeholder { color: var(--muted); }
 
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
 // ============================================================
-// CONFIG — paste your values from Supabase → Project Settings → API
+// localStorage — v1 (Supabase coming in v2)
 // ============================================================
-const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const STORAGE_KEY = 'the-pride-entries';
+
+function loadAllEntries() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+}
+function saveAllEntries(all) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+}
 
 // ── Helpers ──────────────────────────────────────────────────
 const START_DATE = new Date('2026-06-20');
@@ -366,19 +371,19 @@ function todayLabel() { return new Date().toLocaleDateString('en-US', { weekday:
 
 // ── Supabase ─────────────────────────────────────────────────
 async function fetchEntries(cat) {
-  const { data, error } = await supabase
-    .from('entries')
-    .select('*')
-    .eq('cat', cat)
-    .order('entry_date', { ascending: false })
-    .limit(30);
-  if (error) { console.error(error); return []; }
-  return data || [];
+  const all = loadAllEntries();
+  const catEntries = Object.values(all[cat] || {});
+  catEntries.sort(function(a, b) { return b.entry_date.localeCompare(a.entry_date); });
+  return catEntries.slice(0, 30);
 }
 async function upsertEntry(entry) {
-  const { error } = await supabase.from('entries').upsert(entry, { onConflict: 'entry_date,cat' });
-  if (error) { console.error(error); return false; }
-  return true;
+  try {
+    const all = loadAllEntries();
+    if (!all[entry.cat]) all[entry.cat] = {};
+    all[entry.cat][entry.entry_date] = entry;
+    saveAllEntries(all);
+    return true;
+  } catch(e) { console.error(e); return false; }
 }
 
 // ── Form state ───────────────────────────────────────────────
