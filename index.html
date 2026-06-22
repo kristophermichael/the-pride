@@ -6,8 +6,159 @@
   <title>The Pride</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0F0E17;
+  --surface:   #1A1825;
+  --surface2:  #242235;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --purple:    #7C3AED;
+  --purple-lt: #A78BFA;
+  --purple-dim:#3D2080;
+  --amber:     #F59E0B;
+  --amber-lt:  #FCD34D;
+  --amber-dim: #78400A;
+  --text:      #E8E6F0;
+  --muted:     #7875A0;
+  --green:     #34D399;
+  --green-dim: #064E3B;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+}
+
+body { font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── Header ── */
+.app-header { background: var(--surface); border-bottom: 0.5px solid var(--border); position: sticky; top: 0; z-index: 10; }
+.header-inner { max-width: 720px; margin: 0 auto; padding: 14px 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-paw { font-size: 20px; }
+h1 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); letter-spacing: -0.01em; }
+.header-date { font-size: 13px; color: var(--muted); }
+
+/* ── Main ── */
+.app-main { max-width: 720px; margin: 0 auto; padding: 1.5rem; }
+
+/* ── Day strip ── */
+.day-strip { margin-bottom: 1.25rem; }
+.day-chip { display: inline-flex; align-items: baseline; gap: 6px; background: var(--surface); border: 0.5px solid var(--border); border-radius: 99px; padding: 5px 14px; }
+.day-num { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--purple-lt); }
+.day-label { font-size: 12px; color: var(--muted); }
+
+/* ── Cat tabs ── */
+.cat-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 5px; }
+.tab-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 16px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+  border: none; border-radius: var(--radius-md); background: transparent;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.tab-btn:hover { color: var(--text); background: var(--surface2); }
+.tab-btn.active.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.tab-btn.active.alma { background: var(--amber-dim); color: var(--amber-lt); }
+.tab-avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.tab-avatar.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.tab-avatar.alma { background: var(--amber-dim); color: var(--amber-lt); }
+.tab-btn.active .tab-avatar.arlo { background: var(--purple); color: #fff; }
+.tab-btn.active .tab-avatar.alma { background: var(--amber); color: #fff; }
+
+/* ── Cat panel ── */
+.cat-panel { display: none; }
+.cat-panel.active { display: block; }
+
+/* ── Card ── */
+.card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.cat-avatar-lg { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 18px; flex-shrink: 0; }
+.cat-avatar-lg.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.cat-avatar-lg.alma { background: var(--amber-dim); color: var(--amber-lt); }
+.cat-name { font-size: 17px; font-weight: 600; color: var(--text); }
+.cat-role { font-size: 12px; color: var(--muted); }
+.cat-active-days { margin-left: auto; font-size: 12px; color: var(--muted); }
+
+/* ── Field label ── */
+.field-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+
+/* ── Mood buttons ── */
+.mood-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 1.25rem; }
+.mood-btn {
+  padding: 8px 4px; font-size: 12px; font-family: 'DM Sans', sans-serif;
+  border: 0.5px solid var(--border2); border-radius: var(--radius-md);
+  background: var(--surface2); color: var(--muted);
+  cursor: pointer; transition: all 0.12s; text-align: center;
+}
+.mood-btn:hover { color: var(--text); border-color: var(--border2); }
+.mood-btn.selected.arlo { background: var(--purple-dim); color: var(--purple-lt); border-color: var(--purple); font-weight: 500; }
+.mood-btn.selected.alma { background: var(--amber-dim); color: var(--amber-lt); border-color: var(--amber); font-weight: 500; }
+
+/* ── Behaviors ── */
+.behaviors { display: flex; flex-direction: column; gap: 8px; }
+.behavior-row { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--muted); transition: color 0.12s; user-select: none; }
+.behavior-row:hover { color: var(--text); }
+.behavior-row input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--purple-lt); flex-shrink: 0; }
+.cat-panel.alma-panel .behavior-row input[type=checkbox] { accent-color: var(--amber-lt); }
+.behavior-row.checked span { color: var(--text); font-weight: 500; }
+
+/* ── Journal ── */
+.journal-section { margin-bottom: 1.25rem; }
+.journal-section .field-label { display: block; margin-bottom: 8px; }
+textarea {
+  width: 100%; min-height: 90px; padding: 10px 14px;
+  font-size: 14px; font-family: 'DM Sans', sans-serif; line-height: 1.6;
+  border: 0.5px solid var(--border2); border-radius: var(--radius-md);
+  background: var(--surface2); color: var(--text); resize: vertical;
+  transition: border-color 0.12s;
+}
+textarea:focus { outline: none; border-color: var(--purple-lt); }
+textarea::placeholder { color: var(--muted); }
+.cat-panel.alma-panel textarea:focus { border-color: var(--amber-lt); }
+
+/* ── Actions ── */
+.action-row { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500;
+  border: 0.5px solid var(--border2); border-radius: var(--radius-md);
+  background: var(--surface2); color: var(--text); cursor: pointer; transition: all 0.12s;
+}
+.btn:hover { background: var(--surface); border-color: var(--border2); }
+.btn:active { transform: scale(0.98); }
+.btn.primary-arlo { background: var(--purple); color: #fff; border-color: var(--purple); }
+.btn.primary-arlo:hover { background: var(--purple-dim); border-color: var(--purple); }
+.btn.primary-alma { background: var(--amber); color: #fff; border-color: var(--amber); }
+.btn.primary-alma:hover { background: var(--amber-dim); border-color: var(--amber); }
+
+/* ── AI box ── */
+.ai-box { background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.ai-box[hidden] { display: none; }
+.ai-box-label { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--purple-lt); margin-bottom: 10px; }
+.cat-panel.alma-panel .ai-box-label { color: var(--amber-lt); }
+.ai-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+.ai-text p + p { margin-top: 10px; }
+.ai-loading { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--purple-lt); animation: blink 1.2s ease-in-out infinite; }
+.cat-panel.alma-panel .dot { background: var(--amber-lt); }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
+
+/* ── Log ── */
+.log-section { margin-top: 0.25rem; }
+.log-header { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+.log-entry { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 8px; }
+.log-entry-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; flex-wrap: wrap; }
+.log-entry-date { font-size: 12px; font-weight: 500; color: var(--text); }
+.mood-pill { font-size: 11px; padding: 2px 10px; border-radius: 99px; }
+.mood-pill.arlo { background: var(--purple-dim); color: var(--purple-lt); }
+.mood-pill.alma  { background: var(--amber-dim);  color: var(--amber-lt);  }
+.log-entry-journal { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
+.milestone-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; background: var(--green-dim); color: var(--green); margin-left: 6px; font-weight: 500; }
+.empty-log { font-size: 13px; color: var(--muted); font-style: italic; padding: 1rem 0; }
+  </style>
 </head>
 <body>
 
@@ -23,7 +174,6 @@
 
   <main class="app-main">
 
-    <!-- Day counter strip -->
     <div class="day-strip">
       <div class="day-chip">
         <span class="day-num" id="day-count">—</span>
@@ -31,107 +181,289 @@
       </div>
     </div>
 
-    <!-- Cat cards -->
-    <section class="cats-grid" aria-label="Daily cat check-in">
+    <!-- Tabs -->
+    <div class="cat-tabs" role="tablist">
+      <button class="tab-btn arlo active" role="tab" aria-selected="true" onclick="switchTab('arlo')">
+        <div class="tab-avatar arlo">A</div>
+        Arlo
+      </button>
+      <button class="tab-btn alma" role="tab" aria-selected="false" onclick="switchTab('alma')">
+        <div class="tab-avatar alma">A</div>
+        Alma
+      </button>
+    </div>
 
-      <div class="cat-card" id="card-makoa">
-        <div class="cat-card-header">
-          <div class="cat-avatar makoa">M</div>
+    <!-- Arlo panel -->
+    <div class="cat-panel arlo-panel active" id="panel-arlo" role="tabpanel">
+      <div class="card">
+        <div class="card-header">
+          <div class="cat-avatar-lg arlo">A</div>
           <div>
-            <div class="cat-name">Makoa</div>
+            <div class="cat-name">Arlo</div>
             <div class="cat-role">The cautious one</div>
           </div>
-          <div class="cat-streak" id="makoa-streak" title="Streak"></div>
+          <div class="cat-active-days" id="arlo-active-days"></div>
         </div>
 
         <div class="field-label">Mood today</div>
-        <div class="mood-row" id="mood-makoa">
-          <button class="mood-btn" data-cat="makoa" data-mood="hiding">Hiding</button>
-          <button class="mood-btn" data-cat="makoa" data-mood="cautious">Cautious</button>
-          <button class="mood-btn" data-cat="makoa" data-mood="curious">Curious</button>
-          <button class="mood-btn" data-cat="makoa" data-mood="playful">Playful</button>
+        <div class="mood-row">
+          <button class="mood-btn" data-cat="arlo" data-mood="hiding">Hiding</button>
+          <button class="mood-btn" data-cat="arlo" data-mood="cautious">Cautious</button>
+          <button class="mood-btn" data-cat="arlo" data-mood="curious">Curious</button>
+          <button class="mood-btn" data-cat="arlo" data-mood="playful">Playful</button>
         </div>
 
         <div class="field-label">Behaviors</div>
         <div class="behaviors">
-          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="came-out" /><span>Came out voluntarily</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="ate-well" /><span>Ate well</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="played" /><span>Responded to play</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="makoa" data-behavior="near-me" /><span>Stayed near me</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="came-out" /><span>Came out voluntarily</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="ate-well" /><span>Ate well</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="played" /><span>Responded to play</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="arlo" data-behavior="near-me" /><span>Stayed near me</span></label>
         </div>
       </div>
 
-      <div class="cat-card" id="card-maui">
-        <div class="cat-card-header">
-          <div class="cat-avatar maui">M</div>
+      <section class="journal-section">
+        <label class="field-label" for="journal-arlo">Arlo — journal notes</label>
+        <textarea id="journal-arlo" placeholder="What happened with Arlo today? What worked, what didn't, any milestones..."></textarea>
+      </section>
+
+      <div class="action-row">
+        <button class="btn primary-arlo" id="save-btn-arlo" onclick="saveEntry('arlo')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Arlo's entry
+        </button>
+        <button class="btn" onclick="getRecommendations('arlo')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Get recommendations
+        </button>
+      </div>
+
+      <div class="ai-box" id="ai-box-arlo" hidden>
+        <div class="ai-box-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          AI recommendations for Arlo
+        </div>
+        <div class="ai-text" id="ai-text-arlo"></div>
+      </div>
+
+      <section class="log-section">
+        <div class="log-header">Arlo's past entries</div>
+        <div id="log-arlo"></div>
+      </section>
+    </div>
+
+    <!-- Alma panel -->
+    <div class="cat-panel alma-panel" id="panel-alma" role="tabpanel">
+      <div class="card">
+        <div class="card-header">
+          <div class="cat-avatar-lg alma">A</div>
           <div>
-            <div class="cat-name">Maui</div>
+            <div class="cat-name">Alma</div>
             <div class="cat-role">The social one</div>
           </div>
-          <div class="cat-streak" id="maui-streak" title="Streak"></div>
+          <div class="cat-active-days" id="alma-active-days"></div>
         </div>
 
         <div class="field-label">Mood today</div>
-        <div class="mood-row" id="mood-maui">
-          <button class="mood-btn" data-cat="maui" data-mood="hiding">Hiding</button>
-          <button class="mood-btn" data-cat="maui" data-mood="cautious">Cautious</button>
-          <button class="mood-btn" data-cat="maui" data-mood="curious">Curious</button>
-          <button class="mood-btn" data-cat="maui" data-mood="playful">Playful</button>
+        <div class="mood-row">
+          <button class="mood-btn" data-cat="alma" data-mood="hiding">Hiding</button>
+          <button class="mood-btn" data-cat="alma" data-mood="cautious">Cautious</button>
+          <button class="mood-btn" data-cat="alma" data-mood="curious">Curious</button>
+          <button class="mood-btn" data-cat="alma" data-mood="playful">Playful</button>
         </div>
 
         <div class="field-label">Behaviors</div>
         <div class="behaviors">
-          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="came-out" /><span>Came out voluntarily</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="ate-well" /><span>Ate well</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="played" /><span>Responded to play</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
-          <label class="behavior-row"><input type="checkbox" data-cat="maui" data-behavior="near-me" /><span>Stayed near me</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="came-out" /><span>Came out voluntarily</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="ate-well" /><span>Ate well</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="played" /><span>Responded to play</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="allowed-touch" /><span>Allowed touch</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="slow-blink" /><span>Slow blink returned</span></label>
+          <label class="behavior-row"><input type="checkbox" data-cat="alma" data-behavior="near-me" /><span>Stayed near me</span></label>
         </div>
       </div>
 
-    </section>
+      <section class="journal-section">
+        <label class="field-label" for="journal-alma">Alma — journal notes</label>
+        <textarea id="journal-alma" placeholder="What happened with Alma today? What worked, what didn't, any milestones..."></textarea>
+      </section>
 
-    <!-- Journal -->
-    <section class="journal-section">
-      <label class="field-label" for="journal-text">Journal — what happened today?</label>
-      <textarea id="journal-text" placeholder="Notes on today's interactions, what worked, what didn't, any milestones worth remembering..."></textarea>
-    </section>
-
-    <!-- Actions -->
-    <div class="action-row">
-      <button class="btn primary" id="save-btn" onclick="saveEntry()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Save today's entry
-      </button>
-      <button class="btn" id="ai-btn" onclick="getRecommendations()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Get recommendations
-      </button>
-    </div>
-
-    <!-- AI recommendations box -->
-    <div class="ai-box" id="ai-box" hidden>
-      <div class="ai-box-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        AI recommendations
+      <div class="action-row">
+        <button class="btn primary-alma" id="save-btn-alma" onclick="saveEntry('alma')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Alma's entry
+        </button>
+        <button class="btn" onclick="getRecommendations('alma')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Get recommendations
+        </button>
       </div>
-      <div class="ai-text" id="ai-text"></div>
-    </div>
 
-    <!-- Past entries log -->
-    <section class="log-section">
-      <div class="log-header">Past entries</div>
-      <div id="log-list"></div>
-    </section>
+      <div class="ai-box" id="ai-box-alma" hidden>
+        <div class="ai-box-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          AI recommendations for Alma
+        </div>
+        <div class="ai-text" id="ai-text-alma"></div>
+      </div>
+
+      <section class="log-section">
+        <div class="log-header">Alma's past entries</div>
+        <div id="log-alma"></div>
+      </section>
+    </div>
 
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+// ============================================================
+// CONFIG — paste your values from Supabase → Project Settings → API
+// ============================================================
+const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ── Helpers ──────────────────────────────────────────────────
+const START_DATE = new Date('2026-06-20');
+function daysSince() { return Math.max(1, Math.floor((new Date() - START_DATE) / 86400000) + 1); }
+function todayKey()   { return new Date().toISOString().slice(0, 10); }
+function todayLabel() { return new Date().toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' }); }
+
+// ── Tab switching ─────────────────────────────────────────────
+function switchTab(cat) {
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab-btn.${cat}`).classList.add('active');
+  document.querySelector(`.tab-btn.${cat}`).setAttribute('aria-selected','true');
+  document.getElementById(`panel-${cat}`).classList.add('active');
+}
+
+// ── Supabase ─────────────────────────────────────────────────
+async function fetchEntries(cat) {
+  const { data, error } = await supabase
+    .from('entries')
+    .select('*')
+    .eq('cat', cat)
+    .order('entry_date', { ascending: false })
+    .limit(30);
+  if (error) { console.error(error); return []; }
+  return data || [];
+}
+async function upsertEntry(entry) {
+  const { error } = await supabase.from('entries').upsert(entry, { onConflict: 'entry_date,cat' });
+  if (error) { console.error(error); return false; }
+  return true;
+}
+
+// ── Form state ───────────────────────────────────────────────
+function getFormState(cat) {
+  let mood = null, behaviors = [];
+  document.querySelectorAll(`.mood-btn[data-cat="${cat}"].selected`).forEach(b => mood = b.dataset.mood);
+  document.querySelectorAll(`input[type=checkbox][data-cat="${cat}"]:checked`).forEach(c => behaviors.push(c.dataset.behavior));
+  return { mood, behaviors, journal: document.getElementById(`journal-${cat}`).value.trim() };
+}
+
+// ── Save ──────────────────────────────────────────────────────
+async function saveEntry(cat) {
+  const btn = document.getElementById(`save-btn-${cat}`);
+  btn.disabled = true; btn.textContent = 'Saving...';
+  const s = getFormState(cat);
+  const ok = await upsertEntry({ cat, entry_date: todayKey(), mood: s.mood, behaviors: s.behaviors, journal: s.journal });
+  if (ok) {
+    btn.textContent = '✓ Saved';
+    setTimeout(() => { btn.textContent = `Save ${cat === 'arlo' ? "Arlo's" : "Alma's"} entry`; btn.disabled = false; }, 1800);
+    await renderLog(cat);
+  } else {
+    btn.textContent = 'Error — try again'; btn.disabled = false;
+  }
+}
+
+// ── Log ───────────────────────────────────────────────────────
+async function renderLog(cat) {
+  const entries = await fetchEntries(cat);
+  const el = document.getElementById(`log-${cat}`);
+  if (!entries.length) { el.innerHTML = `<div class="empty-log">No entries yet — save today's check-in to start the log.</div>`; return; }
+  const isArlo = cat === 'arlo';
+  el.innerHTML = entries.map(e => {
+    const b = e.behaviors || [];
+    const mTags = [
+      b.includes('allowed-touch') ? `<span class="milestone-tag">First touch — ${isArlo ? 'Arlo' : 'Alma'}</span>` : '',
+      b.includes('slow-blink')    ? `<span class="milestone-tag">Slow blink returned</span>`  : ''
+    ].join('');
+    const pill = e.mood ? `<span class="mood-pill ${cat}">${e.mood}</span>` : '';
+    const d = new Date(e.entry_date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    return `<div class="log-entry">
+      <div class="log-entry-header"><span class="log-entry-date">${d}${mTags}</span>${pill}</div>
+      ${e.journal ? `<div class="log-entry-journal">${e.journal}</div>` : ''}
+    </div>`;
+  }).join('');
+  const activeDays = entries.filter(e => (e.behaviors||[]).length > 0).length;
+  document.getElementById(`${cat}-active-days`).textContent = activeDays ? `${activeDays} active days` : '';
+}
+
+// ── AI Recommendations ────────────────────────────────────────
+async function getRecommendations(cat) {
+  const aiBox = document.getElementById(`ai-box-${cat}`), aiText = document.getElementById(`ai-text-${cat}`);
+  aiBox.removeAttribute('hidden');
+  aiText.innerHTML = `<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Analyzing ${cat === 'arlo' ? 'Arlo' : 'Alma'}'s progress...</span></div>`;
+  const s = getFormState(cat), entries = await fetchEntries(cat);
+  const history = entries.slice(0,7).map(e => {
+    const d = new Date(e.entry_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `${d}: mood(${e.mood||'?'}), behaviors: ${(e.behaviors||[]).join(', ')||'none'}, note: "${e.journal||'-'}"`;
+  }).join('\n');
+
+  const isArlo = cat === 'arlo';
+  const prompt = `You are a warm, knowledgeable cat behavior expert helping Kristopher, a devoted cat parent.
+
+He recently adopted two ~6-month-old kittens — a brother (${isArlo ? 'Arlo, the subject of this session' : 'Arlo'}) and sister (${isArlo ? 'Alma' : 'Alma, the subject of this session'}). They are bonded siblings.
+${isArlo
+  ? '- Arlo is more standoffish. He comes out to eat and plays with wand/laser toys but avoids touch and retreats to his safe spot. Adopted at 6 months, past the prime socialization window.\n- Kristopher practices slow blink + look away, keeps a worn t-shirt near Arlo\'s safe spot, and lets Arlo initiate all contact. He resists the urge to reach for Arlo.'
+  : '- Alma is warming up quickly and is social, coming up for pets and engaging with Kristopher readily.'
+}
+
+Today's check-in for ${isArlo ? 'Arlo' : 'Alma'}:
+Mood: ${s.mood||'not noted'}
+Behaviors: ${s.behaviors.join(', ')||'none checked'}
+Journal: ${s.journal||'no notes today'}
+
+Recent history for ${isArlo ? 'Arlo' : 'Alma'}:
+${history||'No prior entries yet.'}
+
+Give 3 warm, specific, actionable recommendations for tomorrow based on today's data. 2-3 sentences each. ${isArlo ? 'Address Arlo\'s trust journey specifically. Acknowledge any progress clearly.' : 'Focus on continuing to build on Alma\'s social confidence and reinforcing positive interactions.'}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const text = data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || 'No recommendations returned.';
+    aiText.innerHTML = text.split(/\n\n+/).map(p => `<p>${p.trim()}</p>`).join('');
+  } catch(err) {
+    console.error(err);
+    aiText.innerHTML = '<p style="color:#F87171">Could not reach AI — check your connection and try again.</p>';
+  }
+}
+
+// ── Mood buttons ──────────────────────────────────────────────
+document.querySelectorAll('.mood-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll(`.mood-btn[data-cat="${btn.dataset.cat}"]`).forEach(b => b.classList.remove('selected','arlo','alma'));
+    btn.classList.add('selected', btn.dataset.cat);
+  });
+});
+document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+  cb.addEventListener('change', () => cb.closest('.behavior-row').classList.toggle('checked', cb.checked));
+});
+
+// ── Init ──────────────────────────────────────────────────────
+document.getElementById('today-date').textContent = todayLabel();
+document.getElementById('day-count').textContent  = daysSince();
+renderLog('arlo');
+renderLog('alma');
+  </script>
 </body>
 </html>
