@@ -269,11 +269,11 @@ textarea::placeholder { color: var(--muted); }
     <div class="cat-tabs" role="tablist">
       <button id="tab-arlo" class="tab-btn arlo active" role="tab" aria-selected="true">
         <span class="tab-avatar arlo">A</span>
-        Arlo
+        Arlo / Makoa
       </button>
       <button id="tab-alma" class="tab-btn alma" role="tab" aria-selected="false">
         <span class="tab-avatar alma">A</span>
-        Alma
+        Alma / Maui
       </button>
     </div>
 
@@ -283,8 +283,8 @@ textarea::placeholder { color: var(--muted); }
         <div class="card-header">
           <div class="cat-avatar-lg arlo">A</div>
           <div>
-            <div class="cat-name">Arlo</div>
-            <div class="cat-role">The cautious one</div>
+            <div class="cat-name">Arlo / Makoa</div>
+            <div class="cat-role">The cautious one — future Makoa</div>
           </div>
           <div class="cat-active-days" id="arlo-active-days"></div>
         </div>
@@ -309,20 +309,20 @@ textarea::placeholder { color: var(--muted); }
       </div>
 
       <section class="journal-section">
-        <label class="field-label" for="journal-arlo">Arlo -- journal notes</label>
-        <textarea id="journal-arlo" placeholder="What happened with Arlo today? What worked, what didn't, any milestones..."></textarea>
+        <label class="field-label" for="journal-arlo">Arlo / Makoa -- journal notes</label>
+        <textarea id="journal-arlo" placeholder="What happened with Arlo / Makoa today? What worked, what didn't, any milestones..."></textarea>
       </section>
 
       <div class="action-row">
         <button class="btn primary-arlo" id="save-btn-arlo">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save Arlo's entry
+          Save Arlo / Makoa's entry
         </button>
 
       </div>
 
       <section class="log-section">
-        <div class="log-header">Arlo's past entries</div>
+        <div class="log-header">Arlo / Makoa — past entries</div>
         <div id="log-arlo"></div>
       </section>
     </div>
@@ -333,8 +333,8 @@ textarea::placeholder { color: var(--muted); }
         <div class="card-header">
           <div class="cat-avatar-lg alma">A</div>
           <div>
-            <div class="cat-name">Alma</div>
-            <div class="cat-role">The social one</div>
+            <div class="cat-name">Alma / Maui</div>
+            <div class="cat-role">The social one — future Maui</div>
           </div>
           <div class="cat-active-days" id="alma-active-days"></div>
         </div>
@@ -359,20 +359,20 @@ textarea::placeholder { color: var(--muted); }
       </div>
 
       <section class="journal-section">
-        <label class="field-label" for="journal-alma">Alma -- journal notes</label>
-        <textarea id="journal-alma" placeholder="What happened with Alma today? What worked, what didn't, any milestones..."></textarea>
+        <label class="field-label" for="journal-alma">Alma / Maui -- journal notes</label>
+        <textarea id="journal-alma" placeholder="What happened with Alma / Maui today? What worked, what didn't, any milestones..."></textarea>
       </section>
 
       <div class="action-row">
         <button class="btn primary-alma" id="save-btn-alma">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save Alma's entry
+          Save Alma / Maui's entry
         </button>
 
       </div>
 
       <section class="log-section">
-        <div class="log-header">Alma's past entries</div>
+        <div class="log-header">Alma / Maui — past entries</div>
         <div id="log-alma"></div>
       </section>
     </div>
@@ -518,7 +518,7 @@ function saveEntry(cat) {
     if (ok) {
       btn.textContent = 'Saved!';
       setTimeout(function() {
-        btn.textContent = cat === 'arlo' ? "Save Arlo's entry" : "Save Alma's entry";
+        btn.textContent = cat === 'arlo' ? "Save Arlo / Makoa's entry" : "Save Alma / Maui's entry";
         btn.disabled = false;
       }, 1800);
       renderLog(cat);
