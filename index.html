@@ -3,7 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Pride</title>
+  <title>The Pride 🐾</title>
+  <script>
+(function() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 180; canvas.height = 180;
+  const ctx = canvas.getContext('2d');
+  const r = 36;
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.arcTo(180, 0, 180, 180, r);
+  ctx.arcTo(180, 180, 0, 180, r);
+  ctx.arcTo(0, 180, 0, 0, r);
+  ctx.arcTo(0, 0, 180, 0, r);
+  ctx.closePath();
+  ctx.fillStyle = '#0F0E17';
+  ctx.fill();
+  ctx.strokeStyle = '#7C3AED';
+  ctx.lineWidth = 10;
+  ctx.stroke();
+  ctx.font = '120px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('\u{1F43E}', 90, 95);
+  const url = canvas.toDataURL('image/png');
+  const link32 = document.createElement('link');
+  link32.rel = 'icon'; link32.type = 'image/png'; link32.href = url;
+  const linkApple = document.createElement('link');
+  linkApple.rel = 'apple-touch-icon'; linkApple.href = url;
+  document.head.appendChild(link32);
+  document.head.appendChild(linkApple);
+})();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
