@@ -400,7 +400,7 @@ textarea::placeholder { color: var(--muted); }
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             Today's pride digest
           </div>
-          <button class="collapse-btn" id="collapse-digest-btn" onclick="toggleDigest()">Collapse</button>
+          <button class="collapse-btn" id="collapse-digest-btn">Collapse</button>
         </div>
         <div class="ai-text" id="ai-text-digest"></div>
       </div>
@@ -628,6 +628,7 @@ function getDigest() {
   var aiBox  = document.getElementById('ai-box-digest');
   var aiText = document.getElementById('ai-text-digest');
   aiBox.removeAttribute('hidden');
+  document.getElementById('collapse-digest-btn').addEventListener('click', toggleDigest);
   aiText.innerHTML = '<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Building today\'s digest...</span></div>';
 
   var arloState = getFormState('arlo');
@@ -687,15 +688,27 @@ function getDigest() {
 function toggleDigest() {
   var text = document.getElementById('ai-text-digest');
   var btn  = document.getElementById('collapse-digest-btn');
-  var collapsed = text.classList.toggle('collapsed');
-  btn.textContent = collapsed ? 'Expand' : 'Collapse';
+  if (!text || !btn) return;
+  if (text.style.display === 'none') {
+    text.style.display = '';
+    btn.textContent = 'Collapse';
+  } else {
+    text.style.display = 'none';
+    btn.textContent = 'Expand';
+  }
 }
 
 function togglePastDigest(id) {
   var el  = document.getElementById(id);
+  if (!el) return;
   var btn = el.previousElementSibling.querySelector('.collapse-btn');
-  var collapsed = el.classList.toggle('collapsed');
-  btn.textContent = collapsed ? 'Expand' : 'Collapse';
+  if (el.style.display === 'none') {
+    el.style.display = '';
+    if (btn) btn.textContent = 'Collapse';
+  } else {
+    el.style.display = 'none';
+    if (btn) btn.textContent = 'Expand';
+  }
 }
 
 function switchTab(cat) {
