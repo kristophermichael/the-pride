@@ -421,7 +421,7 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var START_DATE = new Date('2026-06-20');
 
-function daysSince() { return Math.max(1, Math.floor((new Date() - START_DATE) / 86400000) + 1); }
+function daysSince() { return Math.floor((new Date() - START_DATE) / 86400000); }
 function todayKey()  { return new Date().toISOString().slice(0, 10); }
 function todayLabel(){ return new Date().toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'}); }
 
