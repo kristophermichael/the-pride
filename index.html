@@ -191,6 +191,11 @@ textarea::placeholder { color: var(--muted); }
 .milestone-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px; background: var(--green-dim); color: var(--green); margin-left: 6px; font-weight: 500; }
 .empty-log { font-size: 13px; color: var(--muted); font-style: italic; padding: 1rem 0; }
 .past-digests-section { margin-top: 0.5rem; }
+.collapse-btn { font-size: 11px; font-weight: 600; font-family: "DM Sans", sans-serif; color: var(--muted); background: none; border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 4px 10px; cursor: pointer; margin-left: auto; transition: all 0.15s; }
+.collapse-btn:hover { color: var(--text); border-color: var(--border2); }
+.ai-box-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.ai-box-header .ai-box-label { margin-bottom: 0; }
+.ai-text.collapsed { display: none; }
 .past-digest-entry { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 10px; }
 .past-digest-date { font-size: 12px; font-weight: 600; color: var(--purple-lt); margin-bottom: 8px; }
 .past-digest-content { font-size: 13px; color: var(--text); line-height: 1.7; }
@@ -390,9 +395,12 @@ textarea::placeholder { color: var(--muted); }
         Get today's digest
       </button>
       <div class="ai-box" id="ai-box-digest" hidden>
-        <div class="ai-box-label">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Today's pride digest
+        <div class="ai-box-header">
+          <div class="ai-box-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Today's pride digest
+          </div>
+          <button class="collapse-btn" id="collapse-digest-btn">Collapse</button>
         </div>
         <div class="ai-text" id="ai-text-digest"></div>
       </div>
@@ -604,9 +612,13 @@ function renderPastDigests() {
       var date = new Date(d.digest_date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
       var text = d.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       var paras = text.split(/\n\n+/).map(function(p) { return '<p>' + p.trim() + '</p>'; }).join('');
+      var id = 'pd-' + d.id;
       return '<div class="past-digest-entry">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
         + '<div class="past-digest-date">' + date + '</div>'
-        + '<div class="past-digest-content">' + paras + '</div>'
+        + '<button class="collapse-btn" onclick="togglePastDigest(\\"' + id + '\\")">Collapse</button>'
+        + '</div>'
+        + '<div class="past-digest-content" id="' + id + '">' + paras + '</div>'
         + '</div>';
     }).join('');
   });
@@ -672,6 +684,20 @@ function getDigest() {
   });
 }
 
+function toggleDigest() {
+  var text = document.getElementById('ai-text-digest');
+  var btn  = document.getElementById('collapse-digest-btn');
+  var collapsed = text.classList.toggle('collapsed');
+  btn.textContent = collapsed ? 'Expand' : 'Collapse';
+}
+
+function togglePastDigest(id) {
+  var el  = document.getElementById(id);
+  var btn = el.previousElementSibling.querySelector('.collapse-btn');
+  var collapsed = el.classList.toggle('collapsed');
+  btn.textContent = collapsed ? 'Expand' : 'Collapse';
+}
+
 function switchTab(cat) {
   document.getElementById('tab-arlo').classList.remove('active');
   document.getElementById('tab-alma').classList.remove('active');
@@ -690,6 +716,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
   document.getElementById('save-btn-alma').addEventListener('click', function() { saveEntry('alma'); });
   document.getElementById('digest-btn').addEventListener('click', getDigest);
+  document.getElementById('collapse-digest-btn').addEventListener('click', toggleDigest);
   document.getElementById('login-btn').addEventListener('click', login);
   document.getElementById('signup-btn').addEventListener('click', signup);
   document.getElementById('logout-btn').addEventListener('click', logout);
