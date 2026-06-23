@@ -616,7 +616,7 @@ function renderPastDigests() {
       return '<div class="past-digest-entry">'
         + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
         + '<div class="past-digest-date">' + date + '</div>'
-        + '<button class="collapse-btn" onclick="togglePastDigest(\\"' + id + '\\")">Collapse</button>'
+        + '<button class="collapse-btn" data-digest-id="' + id + '">Collapse</button>'
         + '</div>'
         + '<div class="past-digest-content" id="' + id + '">' + paras + '</div>'
         + '</div>';
@@ -628,7 +628,6 @@ function getDigest() {
   var aiBox  = document.getElementById('ai-box-digest');
   var aiText = document.getElementById('ai-text-digest');
   aiBox.removeAttribute('hidden');
-  document.getElementById('collapse-digest-btn').addEventListener('click', toggleDigest);
   aiText.innerHTML = '<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:6px">Building today\'s digest...</span></div>';
 
   var arloState = getFormState('arlo');
@@ -729,6 +728,16 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('save-btn-arlo').addEventListener('click', function() { saveEntry('arlo'); });
   document.getElementById('save-btn-alma').addEventListener('click', function() { saveEntry('alma'); });
   document.getElementById('digest-btn').addEventListener('click', getDigest);
+
+  // Delegated listeners for collapse buttons — fire regardless of when element renders
+  document.addEventListener('click', function(e) {
+    var btn = e.target;
+    while (btn && btn !== document) {
+      if (btn.id === 'collapse-digest-btn') { toggleDigest(); return; }
+      if (btn.classList && btn.classList.contains('collapse-btn') && btn.dataset.digestId) { togglePastDigest(btn.dataset.digestId); return; }
+      btn = btn.parentElement;
+    }
+  });
   document.getElementById('login-btn').addEventListener('click', login);
   document.getElementById('signup-btn').addEventListener('click', signup);
   document.getElementById('logout-btn').addEventListener('click', logout);
